@@ -25,6 +25,8 @@ SECRET_KEY = 'django-insecure-xya#nm&12!#e_nw7*(xw5=vgv5rm840)um3&ds#%)hatogwixl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+BASE_API_URL = 'api/v1'
+
 ALLOWED_HOSTS = []
 
 
@@ -37,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'debug_toolbar',
+    'drf_spectacular',
     'service.apps.ServiceConfig',
     'user.apps.UserConfig',
 ]
@@ -49,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -68,6 +74,32 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Airport API Service',
+    'DESCRIPTION': 'API to manage airport services',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'defaultModelRendering': True,
+        'defaultModelsExpandDepth': 2,
+        'defaultModelExpandDepth': 2
+    },
+    'SORT_OPERATIONS': True,
+    'SORT_OPERATION_PARAMETERS': True,
+    # 'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAdminUser']
+    'SCHEMA_PATH_PREFIX': BASE_API_URL,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'COMPONENT_SPLIT_PATCH': True,
+    'POSTPROCESSING_HOOKS': [
+        'drf_spectacular.hooks.postprocess_schema_enums',
+    ]
+}
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
