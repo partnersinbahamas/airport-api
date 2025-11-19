@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+      - app-media:/files/media
+      - app-static:/files/static
+    environment:
+      - IN_DOCKER=1
+    image: partnersinbahamas/airport-api-app
+    command: >
+      sh -c "python manage.py wait_for_db &&
+              python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    restart: always
+    ports:
+      - "5436:5432"
+    env_file:
+      - .env
+    volumes:
+      - app-db:$PGDATA
+
+volumes:
+  app-db:
+  app-media:
+  app-static:
