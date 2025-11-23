@@ -3,7 +3,7 @@ from django.db import models
 from .utils import create_airport_image_url
 
 class Airport(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     city = models.CharField(max_length=55)
     image = models.ImageField(null=True, upload_to=create_airport_image_url)
     open_year = models.PositiveSmallIntegerField()
