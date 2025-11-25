@@ -44,3 +44,10 @@ def create_admin_user(db):
         username="admin",
         password="adminpassword"
     )
+
+@pytest.fixture()
+def create_user(db):
+    return get_user_model().objects.create_user(
+        username="user",
+        password="userpassword"
+    )
