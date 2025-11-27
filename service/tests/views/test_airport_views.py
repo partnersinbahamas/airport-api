@@ -2,8 +2,9 @@ from rest_framework import status
 from rest_framework.reverse import reverse_lazy
 from rest_framework.test import APIClient, APIRequestFactory
 
-from ..fixtures import create_admin_user, create_user, create_airport_list
-from ...serializers import AirportSerializer
+from ..fixtures import create_admin_user, create_user, create_airport_list, create_airport_model
+from ..utils import get_test_image
+from ...serializers import AirportSerializer, AirportImageSerializer
 
 from service.models import Airport
 
@@ -142,5 +143,60 @@ class TestPublicAirportListView:
         }
 
         response = self.client.post(AIRPORT_LIST_URL, airport_data)
+
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+class TestPrivateAirportDetailView:
+    def setup_method(self):
+        self.client = APIClient()
+        self.factory = APIRequestFactory()
+
+    def test_airport_detail(self, create_admin_user, create_airport_model):
+        user = create_admin_user
+        self.client.force_authenticate(user)
+
+        airport = create_airport_model
+        url = reverse_lazy("service:airports-detail", args=[airport.id])
+        self.request = self.factory.get(url)
+
+        airport_serializer = AirportSerializer(airport, context={"request": self.request})
+        response = self.client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data == airport_serializer.data
+
+
+    def test_airport_upload_image(self, create_admin_user, create_airport_model):
+        user = create_admin_user
+        self.client.force_authenticate(user)
+
+        airport = create_airport_model
+        image_file = get_test_image()
+
+        url = reverse_lazy("service:airports-upload-image", args=[airport.id])
+        response = self.client.post(url, {"image": image_file}, format="multipart")
+
+        airport.refresh_from_db()
+
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["image"].endswith(str(airport.image))
+
+
+
+class TestPublicAirportDetailView:
+    def setup_method(self):
+        self.client = APIClient()
+        self.factory = APIRequestFactory()
+
+    def test_airport_upload_image(self, create_user, create_airport_model):
+        user = create_user
+        self.client.force_authenticate(user)
+
+        airport = create_airport_model
+        image_file = get_test_image()
+
+        url = reverse_lazy("service:airports-upload-image", args=[airport.id])
+        response = self.client.post(url, {"image": image_file}, format="multipart")
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
