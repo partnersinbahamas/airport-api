@@ -16,3 +16,25 @@ class Airport(models.Model):
         ordering = ["-created_at"]
         verbose_name_plural = "Airports"
         verbose_name = "Airport"
+
+
+class Route(models.Model):
+    source = models.ForeignKey(
+        Airport,
+        on_delete=models.CASCADE,
+        related_name="routes_source"
+    )
+    destination = models.ForeignKey(
+        Airport,
+        on_delete=models.CASCADE,
+        related_name="routes_destination"
+    )
+    distance = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.source} - {self.destination} ({self.distance}km.)"
+
+    class Meta:
+        ordering = ["distance"]
+        verbose_name_plural = "Routes"
+        verbose_name = "Route"
