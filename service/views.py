@@ -4,8 +4,15 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from service.models import Airport
-from service.serializers import AirportSerializer, AirportImageSerializer
+from service.models import Airport, Route
+from service.serializers import (
+    AirportSerializer,
+    AirportImageSerializer,
+    RouteSerializer,
+    RouteListSerializer,
+    RouteRetrieveSerializer,
+)
+
 from .utils import params_from_query, params_from_query_integers
 
 
@@ -53,3 +60,17 @@ class AirportViewSet(viewsets.ModelViewSet):
             return AirportImageSerializer
 
         return AirportSerializer
+
+
+class RouteViewSet(viewsets.ModelViewSet):
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return RouteListSerializer
+
+        if self.action == 'retrieve':
+            return RouteRetrieveSerializer
+
+        return RouteSerializer
+
+    def get_queryset(self):
+         return Route.objects.select_related('source', 'destination')
