@@ -110,6 +110,7 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_PATCH': True,
     'POSTPROCESSING_HOOKS': [
         'drf_spectacular.hooks.postprocess_schema_enums',
+        "core.management.commands.schema_default_responses.schema_default_responses",
     ]
 }
 
