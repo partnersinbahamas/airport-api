@@ -1,4 +1,7 @@
+from email.policy import default
+
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
@@ -16,6 +19,92 @@ from service.serializers import (
 from .utils import params_from_query, params_from_query_integers
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Airports list",
+        description="Get a list of airports filtered by city and year.",
+        tags=["Airports"],
+        request=None,
+        parameters=[
+            OpenApiParameter(
+                name="year",
+                type={"type": "array", "items": {"type": "number"}},
+                required=False,
+                description="Filter by year of opening.",
+                examples=[
+                    OpenApiExample(
+                        name="None",
+                        value=None,
+                        summary="None",
+                    ),
+                    OpenApiExample(
+                        name="2020",
+                        value=[2020],
+                        summary="2020",
+                    ),
+                    OpenApiExample(
+                        name="2020, 1931",
+                        value=[2020, 1931],
+                        summary="2020, 1931",
+                    ),
+                ]
+            ),
+            OpenApiParameter(
+                name="city",
+                type={"type": "array", "items": {"type": "string"}},
+                required=False,
+                description="Filter by city name.",
+                examples=[
+                    OpenApiExample(
+                        name="None",
+                        value=None,
+                        summary="None",
+                    ),
+                    OpenApiExample(
+                        name="Berlin",
+                        value=["Berlin"],
+                        summary="Berlin",
+                    ),
+                    OpenApiExample(
+                        name="Berlin, London",
+                        value=["Berlin", "London"],
+                        summary="Berlin, London",
+                    ),
+                ]
+            ),
+        ],
+    ),
+    create=extend_schema(
+        summary="Create airport",
+        description="Create a new airport.",
+        tags=["Airports"],
+        request=None,
+    ),
+    retrieve=extend_schema(
+        summary="Airport details",
+        description="Get details of an airport.",
+        tags=["Airports"],
+        request=None,
+    ),
+    update=extend_schema(
+        summary="Update airport",
+        description="Update an existing airport.",
+        tags=["Airports"],
+        request=AirportSerializer,
+    ),
+    partial_update = extend_schema(
+        summary="Partial update airport",
+        description="Update an existing airport.",
+        tags=["Airports"],
+        request=AirportSerializer,
+    ),
+    destroy=extend_schema(
+        summary="Delete airport",
+        description="Delete an airport.",
+        tags=["Airports"],
+        request=None
+    )
+)
 class AirportViewSet(viewsets.ModelViewSet):
     serializer_class = AirportSerializer
 
@@ -40,6 +129,12 @@ class AirportViewSet(viewsets.ModelViewSet):
 
         return query
 
+    @extend_schema(
+        summary="Upload image",
+        description="Upload an image to an airport.",
+        tags=["Airports"],
+        request=None,
+    )
     @action(
         methods=['POST'],
         url_path="upload-image",
