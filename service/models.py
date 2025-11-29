@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 
 from .utils import create_airport_image_url
 
@@ -38,3 +39,9 @@ class Route(models.Model):
         ordering = ["distance"]
         verbose_name_plural = "Routes"
         verbose_name = "Route"
+        constraints = [
+            UniqueConstraint(
+                fields=["source", "destination"],
+                name="unique_route"
+            )
+        ]
