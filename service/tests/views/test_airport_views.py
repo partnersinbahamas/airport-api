@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse_lazy
 from rest_framework.test import APIClient, APIRequestFactory
 
-from ..fixtures import create_admin_user, create_user, create_airport_list, create_airport_model
+from ..conftest import create_admin_user, create_user, create_airport_list, create_airport_model
 from ..utils import get_test_image
 from ...serializers import AirportSerializer, AirportImageSerializer
 

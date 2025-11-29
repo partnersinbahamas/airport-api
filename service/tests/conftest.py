@@ -1,9 +1,10 @@
 import pytest
 from django.contrib.auth import get_user_model
 
-from service.models import Airport
+from service.models import Airport, Route
 
 
+# Airport
 @pytest.fixture()
 def create_airport_model(db):
     return Airport.objects.create(
@@ -38,6 +39,8 @@ def create_airport_list(db):
 
     return Airport.objects.bulk_create(raw_airports)
 
+
+# User
 @pytest.fixture()
 def create_admin_user(db):
     return get_user_model().objects.create_superuser(
@@ -51,3 +54,16 @@ def create_user(db):
         username="user",
         password="userpassword"
     )
+
+
+# Route
+@pytest.fixture()
+def create_route(db, create_airport_list):
+    airports = create_airport_list
+
+    return Route.objects.create(
+        source=airports[0],
+        destination=airports[1],
+        distance=10,
+    )
+

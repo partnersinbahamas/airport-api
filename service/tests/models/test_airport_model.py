@@ -1,7 +1,7 @@
 import pytest
 from django.db import IntegrityError, transaction
 
-from ..fixtures import create_airport_model
+from ..conftest import create_airport_model
 from ...models import Airport
 
 
