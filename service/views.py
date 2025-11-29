@@ -1,5 +1,3 @@
-from email.policy import default
-
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, status
@@ -94,7 +92,7 @@ from .utils import params_from_query, params_from_query_integers
     ),
     partial_update = extend_schema(
         summary="Partial update airport",
-        description="Update an existing airport.",
+        description="Partial update an existing airport.",
         tags=["Airports"],
         request=AirportSerializer,
     ),
@@ -157,6 +155,45 @@ class AirportViewSet(viewsets.ModelViewSet):
         return AirportSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Routes list",
+        description="Get a list of routes.",
+        tags=["Routes"],
+        request=None,
+    ),
+    retrieve=extend_schema(
+        summary="Route details",
+        description="Get details of a route.",
+        tags=["Routes"],
+        request=None,
+    ),
+    create=extend_schema(
+        summary="Create route",
+        description="Create a new route.",
+        tags=["Routes"],
+        request=RouteSerializer,
+        responses={201: RouteRetrieveSerializer},
+    ),
+    update=extend_schema(
+        summary="Update route",
+        description="Update an existing route.",
+        tags=["Routes"],
+        request=RouteSerializer,
+    ),
+    partial_update = extend_schema(
+        summary="Partial update route",
+        description="Partial update an existing route.",
+        tags=["Routes"],
+        request=RouteSerializer,
+    ),
+    destroy=extend_schema(
+        summary="Delete route",
+        description="Delete an existing route.",
+        tags=["Routes"],
+        request=None
+    )
+)
 class RouteViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
