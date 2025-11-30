@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 
 from .utils import create_airport_image_url
 
@@ -16,3 +17,31 @@ class Airport(models.Model):
         ordering = ["-created_at"]
         verbose_name_plural = "Airports"
         verbose_name = "Airport"
+
+
+class Route(models.Model):
+    source = models.ForeignKey(
+        Airport,
+        on_delete=models.CASCADE,
+        related_name="routes_source"
+    )
+    destination = models.ForeignKey(
+        Airport,
+        on_delete=models.CASCADE,
+        related_name="routes_destination"
+    )
+    distance = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.source} - {self.destination} ({self.distance}km.)"
+
+    class Meta:
+        ordering = ["distance"]
+        verbose_name_plural = "Routes"
+        verbose_name = "Route"
+        constraints = [
+            UniqueConstraint(
+                fields=["source", "destination"],
+                name="unique_route"
+            )
+        ]

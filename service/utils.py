@@ -1,6 +1,7 @@
 import uuid
 from pathlib import Path
 
+from django.urls import reverse
 from django.utils.text import slugify
 
 def create_airport_image_url(airport: "Airport", filename: str) -> Path:
@@ -14,3 +15,10 @@ def params_from_query(query: str | None) -> list:
 
 def params_from_query_integers(query: str | None) -> list:
     return [int(param.strip()) for param in query.split(',')]
+
+
+def get_admin_url(obj):
+    return reverse(
+        f"admin:{obj._meta.app_label}_{obj._meta.model_name}_change",
+        args=[obj.pk]
+    )

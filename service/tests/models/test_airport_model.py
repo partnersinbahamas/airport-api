@@ -1,13 +1,19 @@
 import pytest
+
 from django.db import IntegrityError, transaction
 
-from ..fixtures import create_airport_model
 from ...models import Airport
+from ..factories import AirportFactory
 
-
+@pytest.mark.django_db
 class TestAirportModel:
-    def test_airport_model_should_be_created(self, create_airport_model):
-        airport = create_airport_model
+    def test_airport_model_should_be_created(self):
+        airport = AirportFactory(
+            name="Airport",
+            city="Hawkins",
+            open_year=2025,
+            image="image.png",
+        )
 
         assert airport.name == "Airport"
         assert airport.city == "Hawkins"
@@ -16,17 +22,11 @@ class TestAirportModel:
         assert str(airport) == "Airport (2025)"
 
 
-    def test_airport_model_name_should_be_unique(self, create_airport_model):
-        airport_1 = create_airport_model
+    def test_airport_model_name_should_be_unique(self):
+        _airport_1 = AirportFactory(name="Airport")
 
         with transaction.atomic():
             with pytest.raises(IntegrityError):
-                airport_2 = Airport.objects.create(
-                    name="Airport",
-                    city="Hawkins",
-                    open_year=2025,
-                    image="image.png"
-                )
+                _airport_2 = AirportFactory(name="Airport")
 
         assert Airport.objects.count() == 1
-
