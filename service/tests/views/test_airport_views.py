@@ -1,27 +1,32 @@
+import pytest
+
 from rest_framework import status
 from rest_framework.reverse import reverse_lazy
 from rest_framework.test import APIClient, APIRequestFactory
 
-from ..conftest import create_admin_user, create_user, create_airport_list, create_airport_model
-from ..utils import get_test_image
-from ...serializers import AirportSerializer, AirportImageSerializer
-
 from service.models import Airport
+
+from ..utils import get_test_image
+from ...serializers import AirportSerializer
+from ..factories import AirportFactory, UserFactory
+
 
 AIRPORT_LIST_URL = reverse_lazy("service:airports-list")
 
+@pytest.mark.django_db
 class TestPrivateAirportListView:
     def setup_method(self):
         self.client = APIClient()
         self.factory = APIRequestFactory()
         self.request = self.factory.get(AIRPORT_LIST_URL)
 
-    def test_airport_list(self, create_admin_user, create_airport_list):
-        user = create_admin_user
+
+    def test_airport_list(self):
+        user = UserFactory(admin=True)
         self.client.force_authenticate(user)
 
         airport_list = sorted(
-            create_airport_list,
+            AirportFactory.create_batch(3),
             key=lambda i: i.created_at,
             reverse=True
         )
@@ -34,19 +39,18 @@ class TestPrivateAirportListView:
 
         response = self.client.get(AIRPORT_LIST_URL)
 
-
         assert response.status_code == status.HTTP_200_OK
         assert response.data == airport_serializer.data
 
 
-    def test_airport_list_should_be_filtered_by_city_query_params(self, create_admin_user, create_airport_list):
+    def test_airport_list_should_be_filtered_by_city_query_params(self):
         airport_list = sorted(
-            create_airport_list,
+            [AirportFactory(city=city) for city in ["Berlin", "Paris", "Kyiv"]],
             key=lambda i: i.created_at,
             reverse=True
         )
-        user = create_admin_user
 
+        user = UserFactory(admin=True)
         self.client.force_authenticate(user)
 
         response = self.client.get(AIRPORT_LIST_URL, {"city": "Berlin,Paris"})
@@ -62,14 +66,14 @@ class TestPrivateAirportListView:
         assert response.data == [airport_serializer.data[1], airport_serializer.data[2]]
 
 
-    def test_airport_list_should_be_filtered_by_year_query_params(self, create_admin_user, create_airport_list):
+    def test_airport_list_should_be_filtered_by_year_query_params(self):
         airport_list = sorted(
-            create_airport_list,
+            [AirportFactory(open_year=year) for year in ["2000", "2001", "2002"]],
             key=lambda i: i.created_at,
             reverse=True
         )
-        user = create_admin_user
 
+        user = UserFactory(admin=True)
         self.client.force_authenticate(user)
 
         response = self.client.get(AIRPORT_LIST_URL, {"year": "2000,2001"})
@@ -84,8 +88,9 @@ class TestPrivateAirportListView:
 
         assert response.data == [airport_serializer.data[1], airport_serializer.data[2]]
 
-    def test_airport_post(self, create_admin_user):
-        user = create_admin_user
+
+    def test_airport_post(self):
+        user = UserFactory(admin=True)
         self.client.force_authenticate(user)
 
         airport_data = {
@@ -105,18 +110,20 @@ class TestPrivateAirportListView:
         assert response.data == airport_serializer.data
 
 
+@pytest.mark.django_db
 class TestPublicAirportListView:
     def setup_method(self):
         self.client = APIClient()
         self.factory = APIRequestFactory()
         self.request = self.factory.get(AIRPORT_LIST_URL)
 
-    def test_public_airport_list(self, create_user, create_airport_list):
-        user = create_user
+
+    def test_public_airport_list(self):
+        user = UserFactory()
         self.client.force_authenticate(user)
 
         airport_list = sorted(
-            create_airport_list,
+            AirportFactory.create_batch(3),
             key=lambda i:i.created_at,
             reverse=True
         )
@@ -132,8 +139,8 @@ class TestPublicAirportListView:
         assert response.data == airport_serializer.data
 
 
-    def test_public_airport_post_should_not_create_object(self, create_user):
-        user = create_user
+    def test_public_airport_post_should_not_create_object(self):
+        user = UserFactory()
         self.client.force_authenticate(user)
 
         airport_data = {
@@ -147,16 +154,18 @@ class TestPublicAirportListView:
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
+@pytest.mark.django_db
 class TestPrivateAirportDetailView:
     def setup_method(self):
         self.client = APIClient()
         self.factory = APIRequestFactory()
 
-    def test_airport_detail(self, create_admin_user, create_airport_model):
-        user = create_admin_user
+
+    def test_airport_detail(self):
+        user = UserFactory(admin=True)
         self.client.force_authenticate(user)
 
-        airport = create_airport_model
+        airport = AirportFactory()
         url = reverse_lazy("service:airports-detail", args=[airport.id])
         self.request = self.factory.get(url)
 
@@ -167,11 +176,11 @@ class TestPrivateAirportDetailView:
         assert response.data == airport_serializer.data
 
 
-    def test_airport_upload_image(self, create_admin_user, create_airport_model):
-        user = create_admin_user
+    def test_airport_upload_image(self):
+        user = UserFactory(admin=True)
         self.client.force_authenticate(user)
 
-        airport = create_airport_model
+        airport = AirportFactory()
         image_file = get_test_image()
 
         url = reverse_lazy("service:airports-upload-image", args=[airport.id])
@@ -183,17 +192,18 @@ class TestPrivateAirportDetailView:
         assert response.data["image"].endswith(str(airport.image))
 
 
-
+@pytest.mark.django_db
 class TestPublicAirportDetailView:
     def setup_method(self):
         self.client = APIClient()
         self.factory = APIRequestFactory()
 
-    def test_airport_upload_image(self, create_user, create_airport_model):
-        user = create_user
+
+    def test_airport_upload_image(self):
+        user = UserFactory()
         self.client.force_authenticate(user)
 
-        airport = create_airport_model
+        airport = AirportFactory()
         image_file = get_test_image()
 
         url = reverse_lazy("service:airports-upload-image", args=[airport.id])
