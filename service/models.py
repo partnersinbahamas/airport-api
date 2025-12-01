@@ -45,3 +45,17 @@ class Route(models.Model):
                 name="unique_route"
             )
         ]
+
+
+class AirplaneType(models.Model):
+    name = models.CharField(max_length=50,unique=True)
+    code = models.CharField(max_length=3, unique=True)
+    purpose = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.name} - {self.code}"
+
+    class Meta:
+        verbose_name_plural = "Airplane Types"
+        verbose_name = "Airplane Type"
+        ordering = ["code"]
