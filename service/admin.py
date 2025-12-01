@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Airport, Route
+from .models import Airport, Route, AirplaneType
 from .utils import get_admin_url
 
 
@@ -43,3 +43,9 @@ class RouteAdmin(admin.ModelAdmin):
         return None
 
     destination_link.short_description = "Destination"
+
+
+@admin.register(AirplaneType)
+class AirplaneTypeAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "code", "purpose")
+    search_fields = ("name", "code")
