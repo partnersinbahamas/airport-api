@@ -4,14 +4,17 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
+from rest_framework import mixins
 
-from service.models import Airport, Route
+from service.models import Airport, Route, Manufacturer
 from service.serializers import (
     AirportSerializer,
     AirportImageSerializer,
     RouteSerializer,
     RouteListSerializer,
     RouteRetrieveSerializer,
+    ManufacturerSerializer,
+    ManufacturerRetrieveSerializer,
 )
 
 from .utils import params_from_query, params_from_query_integers
@@ -206,3 +209,19 @@ class RouteViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
          return Route.objects.select_related('source', 'destination')
+
+
+class ManufacturerViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Manufacturer.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return ManufacturerRetrieveSerializer
+
+        return ManufacturerSerializer
