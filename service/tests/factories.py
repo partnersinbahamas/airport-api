@@ -1,7 +1,8 @@
 import factory
 from django.contrib.auth import get_user_model
 
-from ..models import Airport, Route
+from ..models import Airport, Route, AirplaneType
+from ..utils import generate_unique_letters_code
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -43,3 +44,12 @@ class RouteFactory(factory.django.DjangoModelFactory):
     source = factory.SubFactory(AirportFactory)
     destination = factory.SubFactory(AirportFactory)
     distance = factory.Faker("pyint")
+
+
+class AirplaneTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AirplaneType
+
+    name = factory.Faker("name")
+    code = factory.Sequence(lambda n: generate_unique_letters_code(n))
+    purpose = factory.Faker("sentence")
