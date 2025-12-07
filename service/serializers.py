@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from service.models import Airport, Route
+from service.models import Airport, Route, Manufacturer
+
 
 # Airport
 class AirportSerializer(serializers.ModelSerializer):
@@ -41,3 +42,20 @@ class RouteListSerializer(RouteSerializer):
     class Meta(RouteSerializer.Meta):
         fields = ("id", "source", "destination", "distance")
 
+
+class ManufacturerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manufacturer
+        fields = ("id", "name", "country", "founded_year", "website", "logo")
+        read_only_fields = ("id",)
+
+
+class ManufacturerRetrieveSerializer(ManufacturerSerializer):
+    class Meta(ManufacturerSerializer.Meta):
+        fields = ManufacturerSerializer.Meta.fields + ("created_at", "updated_at")
+        read_only_fields = ManufacturerSerializer.Meta.read_only_fields + ("created_at", "updated_at")
+
+
+class ManufacturerCreateSerializer(ManufacturerSerializer):
+    def to_representation(self, instance):
+        return ManufacturerRetrieveSerializer(instance).data
