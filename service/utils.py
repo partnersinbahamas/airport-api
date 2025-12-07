@@ -1,4 +1,5 @@
 import uuid
+import string
 from pathlib import Path
 
 from django.urls import reverse
@@ -26,4 +27,14 @@ def get_admin_url(obj):
     return reverse(
         f"admin:{obj._meta.app_label}_{obj._meta.model_name}_change",
         args=[obj.pk]
+    )
+
+
+def generate_unique_letters_code(iterations: int = 3):
+    letters = string.ascii_uppercase
+
+    return (
+        letters[(iterations // 26**2) % 26] +
+        letters[(iterations // 26) % 26] +
+        letters[iterations % 26]
     )
