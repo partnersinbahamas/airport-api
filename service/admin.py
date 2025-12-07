@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Airport, Route, AirplaneType
+from .models import Airport, Route, AirplaneType, Manufacturer
 from .utils import get_admin_url
 
 
@@ -49,3 +49,17 @@ class RouteAdmin(admin.ModelAdmin):
 class AirplaneTypeAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "code", "purpose")
     search_fields = ("name", "code")
+
+
+@admin.register(Manufacturer)
+class ManufacturerAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "country", "founded_year", "website", "render_logo", "created_at")
+    search_fields = ("name", "country")
+    readonly_fields = ("render_logo", "logo")
+
+    def render_logo(self, obj):
+        if obj.logo:
+            return mark_safe(f'<img src="{obj.logo.url}" width="50px" height="50px">')
+        return None
+
+    render_logo.short_description = "Logotype"
