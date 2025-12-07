@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from .utils import create_airport_image_url
+from .utils import create_airport_image_url, create_manufacturer_logo_url
 
 class Airport(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -45,6 +45,25 @@ class Route(models.Model):
                 name="unique_route"
             )
         ]
+
+
+class Manufacturer(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    country = models.CharField(max_length=50)
+    founded_year = models.PositiveSmallIntegerField(null=True, blank=True)
+    website = models.URLField(null=True, blank=True)
+    logo = models.ImageField(null=True, upload_to=create_manufacturer_logo_url)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.country})"
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name_plural = "Manufacturers"
+        verbose_name = "Manufacturer"
 
 
 class AirplaneType(models.Model):

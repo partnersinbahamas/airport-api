@@ -9,6 +9,11 @@ def create_airport_image_url(airport: "Airport", filename: str) -> Path:
     return Path("uploads/airports/") / Path(path)
 
 
+def create_manufacturer_logo_url(manufacturer: "Manufacturer", filename: str) -> Path:
+    path = f"{slugify(manufacturer.name)}-{uuid.uuid4()}" + Path(filename).suffix
+    return Path("uploads/manufacturers/") / Path(path)
+
+
 def params_from_query(query: str | None) -> list:
     return [param.strip() for param in query.split(',')]
 
