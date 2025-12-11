@@ -15,6 +15,7 @@ from service.serializers import (
     RouteRetrieveSerializer,
     ManufacturerSerializer,
     ManufacturerRetrieveSerializer,
+    ManufacturerCreateSerializer,
 )
 
 from .utils import params_from_query, params_from_query_integers
@@ -211,6 +212,42 @@ class RouteViewSet(viewsets.ModelViewSet):
          return Route.objects.select_related('source', 'destination')
 
 
+@extend_schema_view(
+    desctiptopn="This viewset has no destroy possibility.",
+    list=extend_schema(
+        summary="Manufacturers list",
+        description="Get a list of manufacturers.",
+        tags=["Manufacturers"],
+        request=None,
+    ),
+    create=extend_schema(
+        summary="Create manufacturer",
+        description="Create a new manufacturer.",
+        tags=["Manufacturers"],
+        request=ManufacturerSerializer,
+        responses={201: ManufacturerRetrieveSerializer}
+    ),
+    retrieve=extend_schema(
+        summary="Manufacturer details",
+        tags=["Manufacturers"],
+        description="Get details of a manufacturer.",
+        request=None,
+    ),
+    update=extend_schema(
+        summary="Update manufacturer",
+        description="Update an existing manufacturer.",
+        tags=["Manufacturers"],
+        request=ManufacturerSerializer,
+        responses={200: ManufacturerRetrieveSerializer}
+    ),
+    partial_update = extend_schema(
+        summary="Partial update manufacturer",
+        description="Partial update an existing manufacturer.",
+        tags=["Manufacturers"],
+        request=ManufacturerSerializer,
+        responses={200: ManufacturerRetrieveSerializer}
+    )
+)
 class ManufacturerViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -221,7 +258,11 @@ class ManufacturerViewSet(
     queryset = Manufacturer.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        retrieve_serializer_actions = ['retrieve', 'update', 'partial_update']
+        if self.action in retrieve_serializer_actions:
             return ManufacturerRetrieveSerializer
+
+        if self.action == 'create':
+            return ManufacturerCreateSerializer
 
         return ManufacturerSerializer
