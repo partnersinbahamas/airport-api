@@ -1,7 +1,7 @@
 import factory
 from django.contrib.auth import get_user_model
 
-from ..models import Airport, Route, AirplaneType
+from ..models import Airport, Route, AirplaneType, Manufacturer
 from ..utils import generate_unique_letters_code
 
 
@@ -53,3 +53,14 @@ class AirplaneTypeFactory(factory.django.DjangoModelFactory):
     name = factory.Faker("name")
     code = factory.Sequence(lambda n: generate_unique_letters_code(n))
     purpose = factory.Faker("sentence")
+
+
+class ManufacturerFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Manufacturer
+
+    name = factory.Faker("name")
+    country = factory.Faker("country")
+    founded_year = factory.Faker("year")
+    website = factory.Faker("url")
+    logo = None
