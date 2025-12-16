@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import mixins
 
-from service.models import Airport, Route, Manufacturer
+from service.models import Airport, Route, Manufacturer, Airplane
 from service.serializers import (
     AirportSerializer,
     AirportImageSerializer,
@@ -16,6 +16,10 @@ from service.serializers import (
     ManufacturerSerializer,
     ManufacturerRetrieveSerializer,
     ManufacturerCreateSerializer,
+    AirplaneSerializer,
+    AirplaneListSerializer,
+    AirplaneRetrieveSerializer,
+    AirplaneCreateSerializer,
 )
 
 from .utils import params_from_query, params_from_query_integers
@@ -266,3 +270,20 @@ class ManufacturerViewSet(
             return ManufacturerCreateSerializer
 
         return ManufacturerSerializer
+
+
+class AirplaneViewSet(viewsets.ModelViewSet):
+    model = Airport
+
+    def get_queryset(self):
+        return Airplane.objects.select_related('manufacturer', 'type')
+
+    def get_serializer_class(self):
+        match self.action:
+            case "list":
+                return AirplaneListSerializer
+            case "retrieve":
+                return AirplaneRetrieveSerializer
+            case "create":
+                return AirplaneCreateSerializer
+        return AirplaneSerializer
