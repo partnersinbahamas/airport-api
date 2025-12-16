@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from service.models import Airport, Route, Manufacturer
+from service.models import Airport, Route, Manufacturer, Airplane
 
 
 # Airport
@@ -43,6 +43,7 @@ class RouteListSerializer(RouteSerializer):
         fields = ("id", "source", "destination", "distance")
 
 
+# Manufacturer
 class ManufacturerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manufacturer
@@ -59,3 +60,70 @@ class ManufacturerRetrieveSerializer(ManufacturerSerializer):
 class ManufacturerCreateSerializer(ManufacturerSerializer):
     def to_representation(self, instance):
         return ManufacturerRetrieveSerializer(instance).data
+
+
+class ManufacturerAirplaneSerializer(ManufacturerSerializer):
+    class Meta(ManufacturerSerializer.Meta):
+        read_only_fields = []
+
+
+# Airplane
+class AirplaneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Airplane
+        fields = (
+            "id",
+            "name",
+            "type",
+            "manufacturer",
+            "rows",
+            "seats_in_row",
+            "pilots_capacity",
+            "personal_capacity",
+            "year_of_manufacture",
+            "fuel_capacity_l",
+            "cargo_capacity_kg",
+            "max_speed_kmh",
+            "max_distance_km",
+            "image",
+        )
+
+
+class AirplaneListSerializer(AirplaneSerializer):
+    manufacturer = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    type = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_type(obj):
+        return f"{obj.type.name} ({obj.type.code})"
+
+    class Meta(AirplaneSerializer.Meta):
+        fields = (
+            "id",
+            "name",
+            "type",
+            "manufacturer",
+            "crew_capacity",
+            "seats_total",
+            "pilots_capacity",
+            "year_of_manufacture",
+            "fuel_capacity_l",
+            "cargo_capacity_kg",
+            "max_speed_kmh",
+            "max_distance_km",
+            "image",
+        )
+
+
+class AirplaneRetrieveSerializer(AirplaneSerializer):
+    manufacturer = ManufacturerAirplaneSerializer()
+    type = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_type(obj):
+        return f"{obj.type.name} ({obj.type.code})"
+
+
+class AirplaneCreateSerializer(AirplaneSerializer):
+    def to_representation(self, instance):
+        return AirplaneRetrieveSerializer(instance).data
