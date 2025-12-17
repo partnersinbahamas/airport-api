@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Airport, Route, AirplaneType, Manufacturer
+from .models import Airport, Route, AirplaneType, Manufacturer, Airplane
 from .utils import get_admin_url
 
 
@@ -51,8 +51,14 @@ class AirplaneTypeAdmin(admin.ModelAdmin):
     search_fields = ("name", "code")
 
 
+class AirplaneInline(admin.TabularInline):
+    model = Airplane
+    extra = 0
+
+
 @admin.register(Manufacturer)
 class ManufacturerAdmin(admin.ModelAdmin):
+    inlines = [AirplaneInline]
     list_display = ("id", "name", "country", "founded_year", "website", "render_logo", "created_at")
     search_fields = ("name", "country")
     readonly_fields = ("render_logo", "logo")
@@ -63,3 +69,26 @@ class ManufacturerAdmin(admin.ModelAdmin):
         return None
 
     render_logo.short_description = "Logotype"
+
+
+
+@admin.register(Airplane)
+class AirplaneAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "type", "manufacturer", "year_of_manufacture", "passenger_seats_total", "crew_capacity", "pilots_capacity", "cargo_capacity_kg", "max_distance_km", "render_image")
+    search_fields = ("name", "manufacturer__name")
+    list_filter = ("year_of_manufacture", "pilots_capacity", "cargo_capacity_kg", "max_distance_km")
+    readonly_fields = ("render_image", "image")
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj is None:
+            return self.readonly_fields
+
+        return self.readonly_fields + ("passenger_seats_total", "crew_capacity")
+
+
+    def render_image(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" width="70px" height="50px">')
+        return None
+
+    render_image.short_description = "Picture"
