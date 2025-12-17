@@ -14,6 +14,7 @@ from service.serializers import (
     RouteListSerializer,
     RouteRetrieveSerializer,
     ManufacturerSerializer,
+    ManufacturerListSerializer,
     ManufacturerRetrieveSerializer,
     ManufacturerCreateSerializer,
     AirplaneSerializer,
@@ -262,12 +263,13 @@ class ManufacturerViewSet(
     queryset = Manufacturer.objects.all()
 
     def get_serializer_class(self):
-        retrieve_serializer_actions = ['retrieve', 'update', 'partial_update']
-        if self.action in retrieve_serializer_actions:
-            return ManufacturerRetrieveSerializer
-
-        if self.action == 'create':
-            return ManufacturerCreateSerializer
+        match self.action:
+            case 'list':
+                return ManufacturerListSerializer
+            case 'retrieve' | 'update' | 'partial_update':
+                return ManufacturerRetrieveSerializer
+            case 'create':
+                return ManufacturerCreateSerializer
 
         return ManufacturerSerializer
 
