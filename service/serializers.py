@@ -51,21 +51,37 @@ class ManufacturerSerializer(serializers.ModelSerializer):
         read_only_fields = ("id",)
 
 
+class ManufacturerListSerializer(ManufacturerSerializer):
+    airplanes_count = serializers.IntegerField(source="airplanes.count")
+
+    class Meta:
+        model = Manufacturer
+        fields = ManufacturerSerializer.Meta.fields + ("airplanes_count",)
+
+
+class ManufacturerAirplaneSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_type(obj):
+        return f"{obj.type.name} ({obj.type.code})"
+
+    class Meta:
+        model = Airplane
+        fields = ("id", "name", "type", "pilots_capacity", "passenger_seats_total", "personal_capacity", "year_of_manufacture", "image")
+
+
 class ManufacturerRetrieveSerializer(ManufacturerSerializer):
+    airplanes = ManufacturerAirplaneSerializer(many=True, read_only=True)
+
     class Meta(ManufacturerSerializer.Meta):
-        fields = ManufacturerSerializer.Meta.fields + ("created_at", "updated_at")
-        read_only_fields = ManufacturerSerializer.Meta.read_only_fields + ("created_at", "updated_at")
+        fields = ManufacturerSerializer.Meta.fields + ("created_at", "updated_at", "airplanes")
+        read_only_fields = ManufacturerSerializer.Meta.read_only_fields + ("created_at", "updated_at", "airplanes")
 
 
 class ManufacturerCreateSerializer(ManufacturerSerializer):
     def to_representation(self, instance):
         return ManufacturerRetrieveSerializer(instance).data
-
-
-class ManufacturerAirplaneSerializer(ManufacturerSerializer):
-    class Meta(ManufacturerSerializer.Meta):
-        read_only_fields = []
-
 
 # Airplane
 class AirplaneSerializer(serializers.ModelSerializer):
@@ -116,12 +132,15 @@ class AirplaneListSerializer(AirplaneSerializer):
 
 
 class AirplaneRetrieveSerializer(AirplaneSerializer):
-    manufacturer = ManufacturerAirplaneSerializer()
+    manufacturer = ManufacturerSerializer()
     type = serializers.SerializerMethodField()
 
     @staticmethod
     def get_type(obj):
         return f"{obj.type.name} ({obj.type.code})"
+
+    class Meta(AirplaneSerializer.Meta):
+        fields = AirplaneListSerializer.Meta.fields + ("passenger_seats_total", )
 
 
 class AirplaneCreateSerializer(AirplaneSerializer):
