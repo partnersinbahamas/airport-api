@@ -113,6 +113,9 @@ class Airplane(models.Model):
 
     @property
     def passenger_seats_total(self):
+        if not self.rows or not self.seats_in_row:
+            return 0
+
         return self.rows * self.seats_in_row
 
     @property
