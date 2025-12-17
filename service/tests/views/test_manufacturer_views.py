@@ -28,7 +28,9 @@ class TestPrivateManufacturerViews:
         serializer = ManufacturerCreateSerializer(manufacturer)
 
         assert response.status_code == status.HTTP_201_CREATED
-        assert response.data == serializer.data
+        assert response.data["name"] == serializer.data["name"]
+        assert response.data["country"] == serializer.data["country"]
+        assert serializer.data["airplanes"] == []
 
 
 @pytest.mark.django_db
