@@ -1,18 +1,29 @@
 from django.db.models import Q
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
+from rest_framework import mixins
 
-from service.models import Airport, Route
+from service.models import Airport, Route, Manufacturer, Airplane
 from service.serializers import (
     AirportSerializer,
     AirportImageSerializer,
     RouteSerializer,
     RouteListSerializer,
     RouteRetrieveSerializer,
+    ManufacturerSerializer,
+    ManufacturerListSerializer,
+    ManufacturerRetrieveSerializer,
+    ManufacturerCreateSerializer,
+    AirplaneSerializer,
+    AirplaneListSerializer,
+    AirplaneRetrieveSerializer,
+    AirplaneCreateSerializer,
 )
+from .filters import AirplaneFilterSet
 
 from .utils import params_from_query, params_from_query_integers
 
@@ -206,3 +217,167 @@ class RouteViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
          return Route.objects.select_related('source', 'destination')
+
+
+@extend_schema_view(
+    desctiptopn="This viewset has no destroy possibility.",
+    list=extend_schema(
+        summary="Manufacturers list",
+        description="Get a list of manufacturers.",
+        tags=["Manufacturers"],
+        request=None,
+    ),
+    create=extend_schema(
+        summary="Create manufacturer",
+        description="Create a new manufacturer.",
+        tags=["Manufacturers"],
+        request=ManufacturerSerializer,
+        responses={201: ManufacturerRetrieveSerializer}
+    ),
+    retrieve=extend_schema(
+        summary="Manufacturer details",
+        tags=["Manufacturers"],
+        description="Get details of a manufacturer.",
+        request=None,
+    ),
+    update=extend_schema(
+        summary="Update manufacturer",
+        description="Update an existing manufacturer.",
+        tags=["Manufacturers"],
+        request=ManufacturerSerializer,
+        responses={200: ManufacturerRetrieveSerializer}
+    ),
+    partial_update = extend_schema(
+        summary="Partial update manufacturer",
+        description="Partial update an existing manufacturer.",
+        tags=["Manufacturers"],
+        request=ManufacturerSerializer,
+        responses={200: ManufacturerRetrieveSerializer}
+    )
+)
+class ManufacturerViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Manufacturer.objects.all()
+
+    def get_serializer_class(self):
+        match self.action:
+            case 'list':
+                return ManufacturerListSerializer
+            case 'retrieve' | 'update' | 'partial_update':
+                return ManufacturerRetrieveSerializer
+            case 'create':
+                return ManufacturerCreateSerializer
+
+        return ManufacturerSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="Airplanes list",
+        description = "Get a list of airplanes.",
+        tags=["Airplanes"],
+        request=None,
+        parameters=[
+            OpenApiParameter(
+                name="manufacturer",
+                type=OpenApiTypes.STR,
+                description="Filter by manufacturer name.",
+                required=False,
+                examples=[
+                    OpenApiExample(
+                        name="None",
+                        value=None,
+                        summary="None",
+                    ),
+                    OpenApiExample(
+                        name="Boeing",
+                        value="Boeing",
+                        summary="Boeing",
+                    ),
+                    OpenApiExample(
+                        name="Lockheed Martin",
+                        value="Lockheed Martin",
+                        summary="Lockheed Martin",
+                    )
+                ]
+            ),
+            OpenApiParameter(
+                name="type",
+                type=OpenApiTypes.STR,
+                description="Filter by airplane type.",
+                required=False,
+                examples=[
+                    OpenApiExample(
+                        name="None",
+                        value=None,
+                        summary="None",
+                    ),
+                    OpenApiExample(
+                        name="Commercial",
+                        value="Commercial",
+                        summary="Commercial",
+                    ),
+                    OpenApiExample(
+                        name="Cargo",
+                        value="Cargo",
+                        summary="Cargo",
+                    ),
+                ]
+            )
+        ]
+    ),
+    retrieve=extend_schema(
+        summary="Airplane details",
+        description="Get details of an airplane.",
+        tags=["Airplanes"],
+        request=None,
+    ),
+    create=extend_schema(
+        summary="Create airplane",
+        description="Create a new airplane.",
+        tags=["Airplanes"],
+        request=AirplaneSerializer,
+        responses={201: AirplaneRetrieveSerializer}
+    ),
+    update=extend_schema(
+        summary="Update airplane",
+        description="Update an existing airplane.",
+        tags=["Airplanes"],
+        request=AirplaneSerializer,
+        responses={200: AirplaneRetrieveSerializer}
+    ),
+    partial_update=extend_schema(
+        summary="Partial update airplane",
+        description="Partial update an existing airplane.",
+        tags=["Airplanes"],
+        request=AirplaneSerializer,
+        responses={200: AirplaneRetrieveSerializer}
+    ),
+    destroy=extend_schema(
+        summary="Delete airplane",
+        description="Delete an existing airplane.",
+        tags=["Airplanes"],
+        request=None,
+    )
+)
+class AirplaneViewSet(viewsets.ModelViewSet):
+    model = Airport
+    filterset_class = AirplaneFilterSet
+
+    def get_queryset(self):
+        return Airplane.objects.select_related('manufacturer', 'type')
+
+    def get_serializer_class(self):
+        match self.action:
+            case "list":
+                return AirplaneListSerializer
+            case "retrieve":
+                return AirplaneRetrieveSerializer
+            case "create" | "update" | "partial_update":
+                return AirplaneCreateSerializer
+        return AirplaneSerializer
