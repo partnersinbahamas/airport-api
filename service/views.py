@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, status
@@ -262,7 +262,12 @@ class ManufacturerViewSet(
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = Manufacturer.objects.all()
+    queryset = Manufacturer.objects.all().prefetch_related(
+        Prefetch(
+            'airplanes',
+            queryset=Airplane.objects.select_related('type')
+        )
+    )
 
     def get_serializer_class(self):
         match self.action:
