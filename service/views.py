@@ -1,4 +1,5 @@
 from django.db.models import Q
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -275,6 +276,95 @@ class ManufacturerViewSet(
         return ManufacturerSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Airplanes list",
+        description = "Get a list of airplanes.",
+        tags=["Airplanes"],
+        request=None,
+        parameters=[
+            OpenApiParameter(
+                name="manufacturer",
+                type=OpenApiTypes.STR,
+                description="Filter by manufacturer name.",
+                required=False,
+                examples=[
+                    OpenApiExample(
+                        name="None",
+                        value=None,
+                        summary="None",
+                    ),
+                    OpenApiExample(
+                        name="Boeing",
+                        value="Boeing",
+                        summary="Boeing",
+                    ),
+                    OpenApiExample(
+                        name="Lockheed Martin",
+                        value="Lockheed Martin",
+                        summary="Lockheed Martin",
+                    )
+                ]
+            ),
+            OpenApiParameter(
+                name="type",
+                type=OpenApiTypes.STR,
+                description="Filter by airplane type.",
+                required=False,
+                examples=[
+                    OpenApiExample(
+                        name="None",
+                        value=None,
+                        summary="None",
+                    ),
+                    OpenApiExample(
+                        name="Commercial",
+                        value="Commercial",
+                        summary="Commercial",
+                    ),
+                    OpenApiExample(
+                        name="Cargo",
+                        value="Cargo",
+                        summary="Cargo",
+                    ),
+                ]
+            )
+        ]
+    ),
+    retrieve=extend_schema(
+        summary="Airplane details",
+        description="Get details of an airplane.",
+        tags=["Airplanes"],
+        request=None,
+    ),
+    create=extend_schema(
+        summary="Create airplane",
+        description="Create a new airplane.",
+        tags=["Airplanes"],
+        request=AirplaneSerializer,
+        responses={201: AirplaneRetrieveSerializer}
+    ),
+    update=extend_schema(
+        summary="Update airplane",
+        description="Update an existing airplane.",
+        tags=["Airplanes"],
+        request=AirplaneSerializer,
+        responses={200: AirplaneRetrieveSerializer}
+    ),
+    partial_update=extend_schema(
+        summary="Partial update airplane",
+        description="Partial update an existing airplane.",
+        tags=["Airplanes"],
+        request=AirplaneSerializer,
+        responses={200: AirplaneRetrieveSerializer}
+    ),
+    destroy=extend_schema(
+        summary="Delete airplane",
+        description="Delete an existing airplane.",
+        tags=["Airplanes"],
+        request=None,
+    )
+)
 class AirplaneViewSet(viewsets.ModelViewSet):
     model = Airport
     filterset_class = AirplaneFilterSet
@@ -288,6 +378,6 @@ class AirplaneViewSet(viewsets.ModelViewSet):
                 return AirplaneListSerializer
             case "retrieve":
                 return AirplaneRetrieveSerializer
-            case "create":
+            case "create" | "update" | "partial_update":
                 return AirplaneCreateSerializer
         return AirplaneSerializer
