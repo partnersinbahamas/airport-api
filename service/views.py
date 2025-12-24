@@ -22,6 +22,7 @@ from service.serializers import (
     AirplaneRetrieveSerializer,
     AirplaneCreateSerializer,
 )
+from .filters import AirplaneFilterSet
 
 from .utils import params_from_query, params_from_query_integers
 
@@ -276,6 +277,7 @@ class ManufacturerViewSet(
 
 class AirplaneViewSet(viewsets.ModelViewSet):
     model = Airport
+    filterset_class = AirplaneFilterSet
 
     def get_queryset(self):
         return Airplane.objects.select_related('manufacturer', 'type')
