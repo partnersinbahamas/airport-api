@@ -371,7 +371,7 @@ class ManufacturerViewSet(
     )
 )
 class AirplaneViewSet(viewsets.ModelViewSet):
-    model = Airport
+    model = Airplane
     filterset_class = AirplaneFilterSet
 
     def get_queryset(self):
