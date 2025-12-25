@@ -2,9 +2,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Airport, Route, AirplaneType, Manufacturer, Airplane
+from .models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew
 from .utils import get_admin_url
 
+admin.site.register(Crew)
 
 @admin.register(Airport)
 class AirportAdmin(admin.ModelAdmin):
