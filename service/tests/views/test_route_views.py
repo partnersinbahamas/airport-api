@@ -38,6 +38,24 @@ class TestPrivateRouteView:
         assert response.data == route_serializer.data
 
 
+    def test_route_should_not_be_created_if_source_and_destination_are_the_same(self):
+        user = UserFactory(admin=True)
+        self.client.force_authenticate(user)
+
+        source = AirportFactory(name="Airport 1")
+
+        route_data = {
+            "source": source.id,
+            "destination": source.id,
+            "distance": 20,
+        }
+
+        response = self.client.post(ROUTE_VIEW_URL, route_data)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "Source and destination cannot be the same." in response.data["detail"]
+
+
 @pytest.mark.django_db
 class TestPublicRouteView:
     def setup_method(self):
