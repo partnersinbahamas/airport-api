@@ -1,9 +1,20 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint, Q, F, CheckConstraint
 
 from .constants import MAX_PILOT_CAPACITY
-from .utils import create_airport_image_url, create_manufacturer_logo_url, create_airplane_image_url
+from .utils import (
+    create_airport_image_url,
+    create_manufacturer_logo_url,
+    create_airplane_image_url
+)
+from .choices import (
+    CrewTypeChoices,
+    CREW_POSITION_CHOICES_LIST,
+    FlightCrewPositionChoices,
+    CabinCrewPositionChoices
+)
 
 
 class Airport(models.Model):
@@ -131,3 +142,42 @@ class Airplane(models.Model):
         verbose_name_plural = "Airplanes"
         verbose_name = "Airplane"
 
+
+
+class Crew(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    crew_type = models.CharField(choices=CrewTypeChoices.choices, max_length=20)
+    position = models.CharField(choices=CREW_POSITION_CHOICES_LIST, max_length=30)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['first_name', 'last_name'])
+        ]
+
+    @property
+    def position_label(self):
+        if self.position:
+            return dict(CREW_POSITION_CHOICES_LIST)[self.position]
+
+        return None
+
+    @property
+    def crew_type_label(self):
+        if self.crew_type:
+            return dict(CrewTypeChoices.choices)[self.crew_type]
+
+        return None
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.crew_type_label}, {self.position_label})"
+
+
+    def clean(self):
+        super().clean()
+
+        if self.crew_type and self.position:
+            if self.crew_type == CrewTypeChoices.FLIGHT_CREW and self.position not in FlightCrewPositionChoices:
+                raise ValidationError(f"Invalid {self.position_label} position for flight crew.")
+            elif self.crew_type == CrewTypeChoices.CABIN_CREW and self.position not in CabinCrewPositionChoices:
+                raise ValidationError(f"Invalid {self.position_label} position for cabin crew.")
