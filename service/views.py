@@ -23,9 +23,7 @@ from service.serializers import (
     AirplaneRetrieveSerializer,
     AirplaneCreateSerializer,
 )
-from .filters import AirplaneFilterSet
-
-from .utils import params_from_query, params_from_query_integers
+from .filters import AirplaneFilterSet, AirportFilterSet
 
 
 @extend_schema_view(
@@ -116,25 +114,11 @@ from .utils import params_from_query, params_from_query_integers
 )
 class AirportViewSet(viewsets.ModelViewSet):
     serializer_class = AirportSerializer
+    filterset_class = AirportFilterSet
 
     def get_queryset(self):
         query = Airport.objects
 
-        cities_query = self.request.query_params.get("city", None)
-        years_query = self.request.query_params.get("year", None)
-
-        if cities_query:
-            q = Q()
-            cities_param = params_from_query(cities_query)
-
-            for city in cities_param:
-                q |= Q(city__icontains=city)
-
-            query = query.filter(q)
-
-        if years_query:
-            years_param = params_from_query_integers(years_query)
-            query = query.filter(open_year__in=years_param)
 
         return query
 
