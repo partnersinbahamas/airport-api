@@ -1,7 +1,6 @@
-from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import UniqueConstraint, Q, F, CheckConstraint
 
 from .constants import MAX_PILOT_CAPACITY
 from .utils import create_airport_image_url, create_manufacturer_logo_url, create_airplane_image_url
@@ -47,6 +46,10 @@ class Route(models.Model):
             UniqueConstraint(
                 fields=["source", "destination"],
                 name="unique_route"
+            ),
+            CheckConstraint(
+                check=~Q(source=F("destination")),
+                name="source_not_equal_destination",
             )
         ]
 

@@ -34,6 +34,12 @@ class RouteSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return RouteRetrieveSerializer(instance).data
 
+    def validate(self, data):
+        if data["source"] == data["destination"]:
+            raise serializers.ValidationError({"detail": "Source and destination cannot be the same."})
+
+        return data
+
 
 class RouteListSerializer(RouteSerializer):
     source = serializers.SlugRelatedField(slug_field="name", read_only=True)
