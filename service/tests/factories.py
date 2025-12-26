@@ -1,9 +1,15 @@
 import factory
+import random
 from django.contrib.auth import get_user_model
 
 from ..constants import MAX_PILOT_CAPACITY
-from ..models import Airport, Route, AirplaneType, Manufacturer, Airplane
+from ..models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew
 from ..utils import generate_unique_letters_code
+from ..choices import (
+    CrewTypeChoices,
+    FlightCrewPositionChoices,
+    CabinCrewPositionChoices
+)
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -84,3 +90,19 @@ class AirplaneFactory(factory.django.DjangoModelFactory):
     max_speed_kmh = factory.Faker("pyint", min_value=100, max_value=1000)
     max_distance_km = factory.Faker("pyint", min_value=1000, max_value=10000)
     image = None
+
+
+class CrewFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Crew
+
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    crew_type = factory.Iterator([CrewTypeChoices.FLIGHT_CREW, CrewTypeChoices.CABIN_CREW])
+
+    @factory.lazy_attribute
+    def position(self):
+        if self.crew_type == CrewTypeChoices.FLIGHT_CREW:
+            return random.choice(FlightCrewPositionChoices.values)
+
+        return random.choice(CabinCrewPositionChoices.values)

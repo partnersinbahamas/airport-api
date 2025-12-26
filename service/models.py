@@ -158,7 +158,7 @@ class Crew(models.Model):
     @property
     def position_label(self):
         if self.position:
-            return dict(CREW_POSITION_CHOICES_LIST)[self.position]
+            return dict(CREW_POSITION_CHOICES_LIST).get(self.position)
 
         return None
 
