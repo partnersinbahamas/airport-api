@@ -188,11 +188,19 @@ AUTH_USER_MODEL = 'user.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+if IN_DOCKER:
+    STATIC_ROOT = "/files/static"
+    MEDIA_ROOT = "/files/media"
 
-MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_URL = '/media/'
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
+else:
+    STATIC_URL = 'static/'
+    STATIC_ROOT = BASE_DIR / 'static'
+
+    MEDIA_ROOT = BASE_DIR / 'media'
+    MEDIA_URL = '/media/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -204,5 +212,5 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 # should be deleted after splitting settings file for production, development and testing envs
-if "pytest" in sys.modules:
+if "pytest" in sys.modules or "test" in sys.argv:
     DEBUG_TOOLBAR_CONFIG = {}
