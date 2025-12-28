@@ -132,7 +132,9 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-IN_DOCKER = os.environ.get('IN_DOCKER', False)
+IN_DOCKER = os.environ.get("IN_DOCKER", False)
+CI_CD = os.environ.get("CI_CD", False)
+
 
 DB_HOST = os.environ.get('LOCAL_POSTGRES_HOST')
 DB_PORT = os.environ.get('LOCAL_POSTGRES_PORT')
@@ -188,7 +190,7 @@ AUTH_USER_MODEL = 'user.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-if IN_DOCKER:
+if CI_CD:
     STATIC_ROOT = "/files/static"
     MEDIA_ROOT = "/files/media"
 
