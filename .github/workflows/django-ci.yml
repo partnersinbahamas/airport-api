@@ -1,0 +1,27 @@
+name: Django Docker CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Django tests with Docker Compose
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          LOCAL_POSTGRES_HOST: ${{ secrets.LOCAL_POSTGRES_HOST }}
+          LOCAL_POSTGRES_PORT: ${{ secrets.LOCAL_POSTGRES_PORT }}
+        run: |
+          docker compose -f docker-compose.ci.yml up --build --abort-on-container-exit --exit-code-from app --remove-orphans
