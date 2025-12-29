@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew
+from .models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew, Flight
 from .utils import get_admin_url
+from .forms import FlightForm
 
 admin.site.register(Crew)
 
@@ -93,3 +94,12 @@ class AirplaneAdmin(admin.ModelAdmin):
         return None
 
     render_image.short_description = "Picture"
+
+
+@admin.register(Flight)
+class FlightAdmin(admin.ModelAdmin):
+    form = FlightForm
+
+    list_display = ("id", "route", "airplane", "departure_time", "arrival_time")
+    list_filter = ("departure_time", "arrival_time")
+    search_fields = ("route__source__name", "route__destination__name")
