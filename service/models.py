@@ -181,3 +181,26 @@ class Crew(models.Model):
                 raise ValidationError(f"Invalid {self.position_label} position for flight crew.")
             elif self.crew_type == CrewTypeChoices.CABIN_CREW and self.position not in CabinCrewPositionChoices:
                 raise ValidationError(f"Invalid {self.position_label} position for cabin crew.")
+
+
+class Flight(models.Model):
+    route = models.ForeignKey(
+        Route,
+        on_delete=models.CASCADE,
+        related_name="flights"
+    )
+    airplane = models.ForeignKey(
+        Airplane,
+        on_delete=models.PROTECT,
+        related_name="flights"
+    )
+    departure_time = models.DateTimeField()
+    arrival_time = models.DateTimeField()
+    crew = models.ManyToManyField(Crew, related_name="flights")
+
+    def __str__(self):
+        return f"{self.route} - {self.airplane}"
+
+    class Meta:
+        verbose_name_plural = "Flights"
+        verbose_name = "Flight"
