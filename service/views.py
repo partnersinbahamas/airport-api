@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import mixins
 
-from service.models import Airport, Route, Manufacturer, Airplane
+from service.models import Airport, Route, Manufacturer, Airplane, Flight
 from service.serializers import (
     AirportSerializer,
     AirportImageSerializer,
@@ -22,6 +22,9 @@ from service.serializers import (
     AirplaneListSerializer,
     AirplaneRetrieveSerializer,
     AirplaneCreateSerializer,
+    FlightSerializer,
+    FlightListSerializer,
+    FlightRetrieveSerializer,
 )
 from .filters import AirplaneFilterSet, AirportFilterSet
 
@@ -370,3 +373,17 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             case "create" | "update" | "partial_update":
                 return AirplaneCreateSerializer
         return AirplaneSerializer
+
+
+class FlightViewSet(viewsets.ModelViewSet):
+    def get_serializer_class(self):
+        match self.action:
+            case "list":
+                return FlightListSerializer
+            case "retrieve":
+                return FlightRetrieveSerializer
+        return FlightSerializer
+
+    def get_queryset(self):
+        # select and prefetch related needed
+        return Flight.objects.all()
