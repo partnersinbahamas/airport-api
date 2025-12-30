@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from service.models import Airport, Route, Manufacturer, Airplane
+from service.models import Airport, Route, Manufacturer, Airplane, Crew, Flight
 
 
 # Airport
@@ -152,3 +152,60 @@ class AirplaneRetrieveSerializer(AirplaneSerializer):
 class AirplaneCreateSerializer(AirplaneSerializer):
     def to_representation(self, instance):
         return AirplaneRetrieveSerializer(instance).data
+
+
+# Flight
+class FlightCrewSerializer(serializers.ModelSerializer):
+    crew_type = serializers.SerializerMethodField()
+    position = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Crew
+        fields = ("id", "first_name", "last_name", "crew_type", "position")
+
+    @staticmethod
+    def get_crew_type(obj):
+        return obj.crew_type_label
+
+    @staticmethod
+    def get_position(obj):
+        return obj.position_label
+
+
+class FlightAirplaneSerializer(serializers.ModelSerializer):
+    passenger_seats = serializers.IntegerField(source="passenger_seats_total")
+    class Meta:
+        model = Airplane
+        fields = (
+            "id",
+            "name",
+            "manufacturer",
+            "pilots_capacity",
+            "personal_capacity",
+            "passenger_seats",
+            "image",
+        )
+
+
+class FlightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flight
+        fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time")
+
+
+class FlightListSerializer(serializers.ModelSerializer):
+    crew = FlightCrewSerializer(many=True, read_only=True)
+    airplane = FlightAirplaneSerializer(read_only=True)
+
+    class Meta:
+        model = Flight
+        fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time")
+
+
+class FlightRetrieveSerializer(serializers.ModelSerializer):
+    crew = FlightCrewSerializer(many=True, read_only=True)
+    airplane = AirplaneRetrieveSerializer(read_only=True)
+
+    class Meta:
+        model = Flight
+        fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time")
