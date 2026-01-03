@@ -1,4 +1,4 @@
-from django.db.models import Q, Prefetch
+from django.db.models import Prefetch
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, status
@@ -23,8 +23,7 @@ from service.serializers import (
     AirplaneRetrieveSerializer,
     AirplaneCreateSerializer,
     FlightSerializer,
-    FlightListSerializer,
-    FlightRetrieveSerializer,
+    FlightReadSerializer,
 )
 from .filters import AirplaneFilterSet, AirportFilterSet
 
@@ -362,7 +361,14 @@ class AirplaneViewSet(viewsets.ModelViewSet):
     filterset_class = AirplaneFilterSet
 
     def get_queryset(self):
-        return Airplane.objects.select_related('manufacturer', 'type')
+        return (
+            Airplane.objects
+                .select_related('manufacturer', 'type')
+                .prefetch_related(Prefetch(
+                    'flights',
+                    queryset=Flight.objects.prefetch_related("route__source", "route__destination"))
+                )
+        )
 
     def get_serializer_class(self):
         match self.action:
@@ -376,14 +382,21 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 
 
 class FlightViewSet(viewsets.ModelViewSet):
+    model = Flight
+
     def get_serializer_class(self):
         match self.action:
-            case "list":
-                return FlightListSerializer
-            case "retrieve":
-                return FlightRetrieveSerializer
+            case "list" | "retrieve":
+                return FlightReadSerializer
         return FlightSerializer
 
     def get_queryset(self):
-        # select and prefetch related needed
-        return Flight.objects.all()
+        return (
+            Flight.objects
+                .select_related(
+                    "airplane",
+                    "route__source",
+                    "route__destination"
+                )
+                .prefetch_related("crew")
+            )

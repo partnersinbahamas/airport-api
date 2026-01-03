@@ -110,10 +110,10 @@ class AirplaneSerializer(serializers.ModelSerializer):
             "image",
         )
 
-
 class AirplaneListSerializer(AirplaneSerializer):
     manufacturer = serializers.SlugRelatedField(slug_field="name", read_only=True)
     type = serializers.SerializerMethodField()
+    flights = serializers.IntegerField(source="flights.count")
 
     @staticmethod
     def get_type(obj):
@@ -133,20 +133,29 @@ class AirplaneListSerializer(AirplaneSerializer):
             "cargo_capacity_kg",
             "max_speed_kmh",
             "max_distance_km",
+            "flights",
             "image",
         )
+
+
+class AirplaneFlightsSerializer(serializers.ModelSerializer):
+    route = RouteRetrieveSerializer(read_only=True)
+    class Meta:
+        model = Flight
+        fields = ("id", "route", "departure_time", "arrival_time")
 
 
 class AirplaneRetrieveSerializer(AirplaneSerializer):
     manufacturer = ManufacturerSerializer()
     type = serializers.SerializerMethodField()
+    flights = AirplaneFlightsSerializer(many=True, read_only=True)
 
     @staticmethod
     def get_type(obj):
         return f"{obj.type.name} ({obj.type.code})"
 
     class Meta(AirplaneSerializer.Meta):
-        fields = AirplaneListSerializer.Meta.fields + ("passenger_seats_total", )
+        fields = AirplaneListSerializer.Meta.fields + ("passenger_seats_total", "flights")
 
 
 class AirplaneCreateSerializer(AirplaneSerializer):
@@ -174,6 +183,7 @@ class FlightCrewSerializer(serializers.ModelSerializer):
 
 class FlightAirplaneSerializer(serializers.ModelSerializer):
     passenger_seats = serializers.IntegerField(source="passenger_seats_total")
+    manufacturer = serializers.SlugRelatedField(slug_field="name", read_only=True)
     class Meta:
         model = Airplane
         fields = (
@@ -188,23 +198,22 @@ class FlightAirplaneSerializer(serializers.ModelSerializer):
 
 
 class FlightSerializer(serializers.ModelSerializer):
+    route = serializers.PrimaryKeyRelatedField(
+        queryset=Route.objects.select_related("source", "destination")
+    )
+    airplane = serializers.PrimaryKeyRelatedField(
+        queryset=Airplane.objects.select_related("manufacturer", "type")
+    )
+
     class Meta:
         model = Flight
         fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time")
 
 
-class FlightListSerializer(serializers.ModelSerializer):
+class FlightReadSerializer(serializers.ModelSerializer):
     crew = FlightCrewSerializer(many=True, read_only=True)
     airplane = FlightAirplaneSerializer(read_only=True)
-
-    class Meta:
-        model = Flight
-        fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time")
-
-
-class FlightRetrieveSerializer(serializers.ModelSerializer):
-    crew = FlightCrewSerializer(many=True, read_only=True)
-    airplane = AirplaneRetrieveSerializer(read_only=True)
+    route = RouteRetrieveSerializer(read_only=True)
 
     class Meta:
         model = Flight
