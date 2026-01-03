@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from service.choices import CrewTypeChoices
 from service.models import Airport, Route, Manufacturer, Airplane, Crew, Flight
 
 
@@ -208,6 +209,30 @@ class FlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flight
         fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time")
+
+    def validate(self, data):
+        crew = data.get("crew")
+        airplane = data.get("airplane")
+
+        print(crew, airplane)
+
+        if crew is not None and airplane is not None:
+            flight_crew = [crew_person for crew_person in crew if crew_person.crew_type == CrewTypeChoices.FLIGHT_CREW]
+            cabin_crew = [crew_person for crew_person in crew if crew_person.crew_type == CrewTypeChoices.CABIN_CREW]
+
+            if len(cabin_crew) > airplane.personal_capacity:
+                raise serializers.ValidationError({"detail": f"The number of cabin crew exceeds the airline's personal capacity."})
+
+            if len(flight_crew) > airplane.pilots_capacity:
+                raise serializers.ValidationError({"detail": f"The number of flight crew exceeds the airline's pilot capacity."})
+
+            if len(cabin_crew) < airplane.personal_capacity:
+                raise serializers.ValidationError({"detail": f"The number of airline personal capacity must be at least { airplane.personal_capacity}."})
+
+            if len(flight_crew) < airplane.pilots_capacity:
+                raise serializers.ValidationError({"detail": f"The number of airline pilots capacity must be at least {airplane.pilots_capacity}."})
+
+        return data
 
 
 class FlightReadSerializer(serializers.ModelSerializer):

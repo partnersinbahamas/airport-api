@@ -25,4 +25,10 @@ class FlightForm(forms.ModelForm):
             if flight_crew.count() > airplane.pilots_capacity:
                 raise ValidationError(f"The number of flight crew exceeds the airline's pilot capacity.")
 
+            if cabin_crew.count() < airplane.personal_capacity:
+                raise ValidationError(f"The number of airline personal capacity must be at least {airplane.personal_capacity}.")
+
+            if flight_crew.count() < airplane.pilots_capacity:
+                raise ValidationError(f"The number of airline pilots capacity must be at least {airplane.pilots_capacity}.")
+
         return cleaned_data
