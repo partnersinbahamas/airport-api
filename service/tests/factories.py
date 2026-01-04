@@ -3,7 +3,7 @@ import random
 from django.contrib.auth import get_user_model
 
 from ..constants import MAX_PILOT_CAPACITY
-from ..models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew
+from ..models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew, Flight
 from ..utils import generate_unique_letters_code
 from ..choices import (
     CrewTypeChoices,
@@ -106,3 +106,36 @@ class CrewFactory(factory.django.DjangoModelFactory):
             return random.choice(FlightCrewPositionChoices.values)
 
         return random.choice(CabinCrewPositionChoices.values)
+
+
+class FlightFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Flight
+
+    route = factory.SubFactory(RouteFactory)
+    airplane = factory.SubFactory(AirplaneFactory)
+    departure_time = factory.Faker("date_time")
+    arrival_time = factory.Faker("date_time")
+
+    @factory.post_generation
+    def crew(self, create, extracted, **kwargs):
+        if not create or extracted is not None:
+            return
+
+        for index in range(self.airplane.pilots_capacity):
+            flight_crew = CrewFactory(
+                first_name=f"FlightCrew first name {index + 1}",
+                last_name=f"FlightCrew last name {index + 1}",
+                crew_type=CrewTypeChoices.FLIGHT_CREW
+            )
+
+            self.crew.add(flight_crew)
+
+        for index in range(self.airplane.personal_capacity):
+            cabin_crew = CrewFactory(
+                first_name=f"CabinCrew first name {index + 1}",
+                last_name=f"CabinCrew last name {index + 1}",
+                crew_type=CrewTypeChoices.CABIN_CREW
+            )
+
+            self.crew.add(cabin_crew)
