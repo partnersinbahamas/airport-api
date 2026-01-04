@@ -204,3 +204,4 @@ class Flight(models.Model):
     class Meta:
         verbose_name_plural = "Flights"
         verbose_name = "Flight"
+        ordering = ["departure_time"]
