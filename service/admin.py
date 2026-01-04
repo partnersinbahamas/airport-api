@@ -8,6 +8,21 @@ from .forms import FlightForm
 
 admin.site.register(Crew)
 
+
+# Inlines
+class FlightInline(admin.TabularInline):
+    model = Flight
+    show_change_link = True
+    readonly_fields = ("crew", )
+    extra = 0
+
+
+class AirplaneInline(admin.TabularInline):
+    model = Airplane
+    show_change_link = True
+    extra = 0
+
+
 @admin.register(Airport)
 class AirportAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "city", "open_year", "render_image", "created_at")
@@ -25,6 +40,7 @@ class AirportAdmin(admin.ModelAdmin):
 
 @admin.register(Route)
 class RouteAdmin(admin.ModelAdmin):
+    inlines = [FlightInline]
     list_display_links = ("id", "source_link", "destination_link")
     list_display = ("id", "source_link", "destination_link", "distance")
     search_fields = ("source__name", "destination__name")
@@ -53,11 +69,6 @@ class AirplaneTypeAdmin(admin.ModelAdmin):
     search_fields = ("name", "code")
 
 
-class AirplaneInline(admin.TabularInline):
-    model = Airplane
-    extra = 0
-
-
 @admin.register(Manufacturer)
 class ManufacturerAdmin(admin.ModelAdmin):
     inlines = [AirplaneInline]
@@ -73,9 +84,9 @@ class ManufacturerAdmin(admin.ModelAdmin):
     render_logo.short_description = "Logotype"
 
 
-
 @admin.register(Airplane)
 class AirplaneAdmin(admin.ModelAdmin):
+    inlines = [FlightInline]
     list_display = ("id", "name", "type", "manufacturer", "year_of_manufacture", "passenger_seats_total", "crew_capacity", "pilots_capacity", "cargo_capacity_kg", "max_distance_km", "render_image")
     search_fields = ("name", "manufacturer__name")
     list_filter = ("year_of_manufacture", "pilots_capacity", "cargo_capacity_kg", "max_distance_km")
