@@ -381,6 +381,47 @@ class AirplaneViewSet(viewsets.ModelViewSet):
         return AirplaneSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Flights list",
+        description="Get a list of flights.",
+        tags=["Flights"],
+        request=None,
+    ),
+    retrieve=extend_schema(
+        summary="Flight details",
+        description="Get details of a flight.",
+        tags=["Flights"],
+        request=None
+    ),
+    create=extend_schema(
+        summary="Create flight",
+        description="Create a new flight.",
+        tags=["Flights"],
+        request=FlightSerializer,
+        responses={201: FlightSerializer}
+    ),
+    update=extend_schema(
+        summary="Update flight",
+        description="Update an existing flight.",
+        tags=["Flights"],
+        request=FlightSerializer,
+        responses={200: FlightSerializer}
+    ),
+    partial_update=extend_schema(
+        summary="Partial update flight",
+        description="Partial update an existing flight.",
+        tags=["Flights"],
+        request=FlightSerializer,
+        responses={200: FlightSerializer}
+    ),
+    destroy=extend_schema(
+        summary="Delete flight",
+        description="Delete an existing flight.",
+        tags=["Flights"],
+        request=None
+    )
+)
 class FlightViewSet(viewsets.ModelViewSet):
     model = Flight
 
