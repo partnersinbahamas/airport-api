@@ -26,6 +26,7 @@ from service.serializers import (
     FlightReadSerializer,
 )
 from .filters import AirplaneFilterSet, AirportFilterSet
+from .paginations import FlightListPagination
 
 
 @extend_schema_view(
@@ -424,6 +425,7 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 )
 class FlightViewSet(viewsets.ModelViewSet):
     model = Flight
+    pagination_class = FlightListPagination
 
     def get_serializer_class(self):
         match self.action:
