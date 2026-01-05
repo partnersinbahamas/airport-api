@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -205,3 +206,16 @@ class Flight(models.Model):
         verbose_name_plural = "Flights"
         verbose_name = "Flight"
         ordering = ["departure_time"]
+
+
+class Order(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="orders")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} order"
+
+    class Meta:
+        verbose_name_plural = "Orders"
+        verbose_name = "Order"
+        ordering = ["-created_at"]
