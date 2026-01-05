@@ -1,4 +1,4 @@
-from django.db.models import Q, Prefetch
+from django.db.models import Prefetch
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, status
@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import mixins
 
-from service.models import Airport, Route, Manufacturer, Airplane
+from service.models import Airport, Route, Manufacturer, Airplane, Flight
 from service.serializers import (
     AirportSerializer,
     AirportImageSerializer,
@@ -22,8 +22,11 @@ from service.serializers import (
     AirplaneListSerializer,
     AirplaneRetrieveSerializer,
     AirplaneCreateSerializer,
+    FlightSerializer,
+    FlightReadSerializer,
 )
 from .filters import AirplaneFilterSet, AirportFilterSet
+from .paginations import FlightListPagination
 
 
 @extend_schema_view(
@@ -359,7 +362,14 @@ class AirplaneViewSet(viewsets.ModelViewSet):
     filterset_class = AirplaneFilterSet
 
     def get_queryset(self):
-        return Airplane.objects.select_related('manufacturer', 'type')
+        return (
+            Airplane.objects
+                .select_related('manufacturer', 'type')
+                .prefetch_related(Prefetch(
+                    'flights',
+                    queryset=Flight.objects.prefetch_related("route__source", "route__destination"))
+                )
+        )
 
     def get_serializer_class(self):
         match self.action:
@@ -370,3 +380,66 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             case "create" | "update" | "partial_update":
                 return AirplaneCreateSerializer
         return AirplaneSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="Flights list",
+        description="Get a list of flights.",
+        tags=["Flights"],
+        request=None,
+    ),
+    retrieve=extend_schema(
+        summary="Flight details",
+        description="Get details of a flight.",
+        tags=["Flights"],
+        request=None
+    ),
+    create=extend_schema(
+        summary="Create flight",
+        description="Create a new flight.",
+        tags=["Flights"],
+        request=FlightSerializer,
+        responses={201: FlightSerializer}
+    ),
+    update=extend_schema(
+        summary="Update flight",
+        description="Update an existing flight.",
+        tags=["Flights"],
+        request=FlightSerializer,
+        responses={200: FlightSerializer}
+    ),
+    partial_update=extend_schema(
+        summary="Partial update flight",
+        description="Partial update an existing flight.",
+        tags=["Flights"],
+        request=FlightSerializer,
+        responses={200: FlightSerializer}
+    ),
+    destroy=extend_schema(
+        summary="Delete flight",
+        description="Delete an existing flight.",
+        tags=["Flights"],
+        request=None
+    )
+)
+class FlightViewSet(viewsets.ModelViewSet):
+    model = Flight
+    pagination_class = FlightListPagination
+
+    def get_serializer_class(self):
+        match self.action:
+            case "list" | "retrieve":
+                return FlightReadSerializer
+        return FlightSerializer
+
+    def get_queryset(self):
+        return (
+            Flight.objects
+                .select_related(
+                    "airplane",
+                    "route__source",
+                    "route__destination"
+                )
+                .prefetch_related("crew")
+            )

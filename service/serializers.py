@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from service.models import Airport, Route, Manufacturer, Airplane
+from service.choices import CrewTypeChoices
+from service.models import Airport, Route, Manufacturer, Airplane, Crew, Flight
 
 
 # Airport
@@ -110,10 +111,10 @@ class AirplaneSerializer(serializers.ModelSerializer):
             "image",
         )
 
-
 class AirplaneListSerializer(AirplaneSerializer):
     manufacturer = serializers.SlugRelatedField(slug_field="name", read_only=True)
     type = serializers.SerializerMethodField()
+    flights = serializers.IntegerField(source="flights.count")
 
     @staticmethod
     def get_type(obj):
@@ -133,22 +134,112 @@ class AirplaneListSerializer(AirplaneSerializer):
             "cargo_capacity_kg",
             "max_speed_kmh",
             "max_distance_km",
+            "flights",
             "image",
         )
+
+
+class AirplaneFlightsSerializer(serializers.ModelSerializer):
+    route = RouteRetrieveSerializer(read_only=True)
+    class Meta:
+        model = Flight
+        fields = ("id", "route", "departure_time", "arrival_time")
 
 
 class AirplaneRetrieveSerializer(AirplaneSerializer):
     manufacturer = ManufacturerSerializer()
     type = serializers.SerializerMethodField()
+    flights = AirplaneFlightsSerializer(many=True, read_only=True)
 
     @staticmethod
     def get_type(obj):
         return f"{obj.type.name} ({obj.type.code})"
 
     class Meta(AirplaneSerializer.Meta):
-        fields = AirplaneListSerializer.Meta.fields + ("passenger_seats_total", )
+        fields = AirplaneListSerializer.Meta.fields + ("passenger_seats_total", "flights")
 
 
 class AirplaneCreateSerializer(AirplaneSerializer):
     def to_representation(self, instance):
         return AirplaneRetrieveSerializer(instance).data
+
+
+# Flight
+class FlightCrewSerializer(serializers.ModelSerializer):
+    crew_type = serializers.SerializerMethodField()
+    position = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Crew
+        fields = ("id", "first_name", "last_name", "crew_type", "position")
+
+    @staticmethod
+    def get_crew_type(obj):
+        return obj.crew_type_label
+
+    @staticmethod
+    def get_position(obj):
+        return obj.position_label
+
+
+class FlightAirplaneSerializer(serializers.ModelSerializer):
+    passenger_seats = serializers.IntegerField(source="passenger_seats_total")
+    manufacturer = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    class Meta:
+        model = Airplane
+        fields = (
+            "id",
+            "name",
+            "manufacturer",
+            "pilots_capacity",
+            "personal_capacity",
+            "passenger_seats",
+            "image",
+        )
+
+
+class FlightSerializer(serializers.ModelSerializer):
+    route = serializers.PrimaryKeyRelatedField(
+        queryset=Route.objects.select_related("source", "destination")
+    )
+    airplane = serializers.PrimaryKeyRelatedField(
+        queryset=Airplane.objects.select_related("manufacturer", "type")
+    )
+
+    class Meta:
+        model = Flight
+        fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time")
+
+    def validate(self, data):
+        crew = data.get("crew")
+        airplane = data.get("airplane")
+
+        print(crew, airplane)
+
+        if crew is not None and airplane is not None:
+            flight_crew = [crew_person for crew_person in crew if crew_person.crew_type == CrewTypeChoices.FLIGHT_CREW]
+            cabin_crew = [crew_person for crew_person in crew if crew_person.crew_type == CrewTypeChoices.CABIN_CREW]
+
+            if len(cabin_crew) > airplane.personal_capacity:
+                raise serializers.ValidationError({"detail": f"The number of cabin crew exceeds the airline's personal capacity."})
+
+            if len(flight_crew) > airplane.pilots_capacity:
+                raise serializers.ValidationError({"detail": f"The number of flight crew exceeds the airline's pilot capacity."})
+
+            if len(cabin_crew) < airplane.personal_capacity:
+                raise serializers.ValidationError({"detail": f"The number of airline personal capacity must be at least { airplane.personal_capacity}."})
+
+            if len(flight_crew) < airplane.pilots_capacity:
+                raise serializers.ValidationError({"detail": f"The number of airline pilots capacity must be at least {airplane.pilots_capacity}."})
+
+        return data
+
+
+class FlightReadSerializer(serializers.ModelSerializer):
+    crew = FlightCrewSerializer(many=True, read_only=True)
+    airplane = FlightAirplaneSerializer(read_only=True)
+    route = RouteRetrieveSerializer(read_only=True)
+
+    class Meta:
+        model = Flight
+        fields = ("id", "route", "airplane", "crew", "departure_time", "arrival_time")

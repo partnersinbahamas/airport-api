@@ -1,9 +1,15 @@
 import factory
+import random
 from django.contrib.auth import get_user_model
 
 from ..constants import MAX_PILOT_CAPACITY
-from ..models import Airport, Route, AirplaneType, Manufacturer, Airplane
+from ..models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew, Flight
 from ..utils import generate_unique_letters_code
+from ..choices import (
+    CrewTypeChoices,
+    FlightCrewPositionChoices,
+    CabinCrewPositionChoices
+)
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -84,3 +90,52 @@ class AirplaneFactory(factory.django.DjangoModelFactory):
     max_speed_kmh = factory.Faker("pyint", min_value=100, max_value=1000)
     max_distance_km = factory.Faker("pyint", min_value=1000, max_value=10000)
     image = None
+
+
+class CrewFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Crew
+
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    crew_type = factory.Iterator([CrewTypeChoices.FLIGHT_CREW, CrewTypeChoices.CABIN_CREW])
+
+    @factory.lazy_attribute
+    def position(self):
+        if self.crew_type == CrewTypeChoices.FLIGHT_CREW:
+            return random.choice(FlightCrewPositionChoices.values)
+
+        return random.choice(CabinCrewPositionChoices.values)
+
+
+class FlightFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Flight
+
+    route = factory.SubFactory(RouteFactory)
+    airplane = factory.SubFactory(AirplaneFactory)
+    departure_time = factory.Faker("date_time")
+    arrival_time = factory.Faker("date_time")
+
+    @factory.post_generation
+    def crew(self, create, extracted, **kwargs):
+        if not create or extracted is not None:
+            return
+
+        for index in range(self.airplane.pilots_capacity):
+            flight_crew = CrewFactory(
+                first_name=f"FlightCrew first name {index + 1}",
+                last_name=f"FlightCrew last name {index + 1}",
+                crew_type=CrewTypeChoices.FLIGHT_CREW
+            )
+
+            self.crew.add(flight_crew)
+
+        for index in range(self.airplane.personal_capacity):
+            cabin_crew = CrewFactory(
+                first_name=f"CabinCrew first name {index + 1}",
+                last_name=f"CabinCrew last name {index + 1}",
+                crew_type=CrewTypeChoices.CABIN_CREW
+            )
+
+            self.crew.add(cabin_crew)
