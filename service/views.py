@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import mixins
 
-from service.models import Airport, Route, Manufacturer, Airplane, Flight
+from service.models import Airport, Route, Manufacturer, Airplane, Flight, Order
 from service.serializers import (
     AirportSerializer,
     AirportImageSerializer,
@@ -24,6 +24,8 @@ from service.serializers import (
     AirplaneCreateSerializer,
     FlightSerializer,
     FlightReadSerializer,
+    OrderSerializer,
+    OrderReadSerializer,
 )
 from .filters import AirplaneFilterSet, AirportFilterSet
 from .paginations import FlightListPagination
@@ -443,3 +445,40 @@ class FlightViewSet(viewsets.ModelViewSet):
                 )
                 .prefetch_related("crew")
             )
+
+class OrdersViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+
+    def get_queryset(self):
+        return (
+            self.queryset.filter(user=self.request.user)
+                .prefetch_related(
+                    Prefetch(
+                        "tickets__flight",
+                        queryset=Flight.objects.select_related(
+                            "airplane",
+                            "route__source",
+                            "route__destination"
+                        )
+                    )
+                )
+        )
+
+    def get_serializer_class(self):
+        match self.action:
+            case "list" | "retrieve":
+                return OrderReadSerializer
+        return OrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_create(serializer)
+
+        output_serializer = OrderReadSerializer(serializer.instance)
+
+        return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
