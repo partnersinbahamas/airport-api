@@ -219,3 +219,51 @@ class Order(models.Model):
         verbose_name_plural = "Orders"
         verbose_name = "Order"
         ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    row = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
+    seat = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
+    flight = models.ForeignKey(Flight, on_delete=models.PROTECT, related_name="tickets")
+    booked_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Ticket {self.row}-{self.seat} for {self.flight}"
+
+    class Meta:
+        verbose_name_plural = "Tickets"
+        verbose_name = "Ticket"
+        ordering = ["-booked_at"]
+
+        constraints = [
+            UniqueConstraint(fields=["row", "seat", "flight"], name="unique_flight_ticket")
+        ]
+
+
+    @staticmethod
+    def validate_seat_number(row: int or None, seat: int or None, airplane: Airplane):
+        if row and seat:
+            airplane = airplane
+
+            if airplane.rows is None or airplane.seats_in_row is None:
+                raise ValidationError(
+                    f"Ticket cannot be booked for {airplane.name}."
+                )
+
+            if row > airplane.rows:
+                raise ValidationError(
+                    f"Invalid row number. "
+                    f"Row number must be between 1 and {airplane.rows}."
+                )
+
+            if seat > airplane.seats_in_row:
+                raise ValidationError(
+                    f"Invalid seat number. "
+                    f"Seat number must be between 1 and {airplane.seats_in_row}."
+                )
+
+
+    def clean(self):
+        super().clean()
+        self.validate_seat_number(self.row, self.seat, self.flight.airplane)
