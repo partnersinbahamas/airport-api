@@ -173,15 +173,16 @@ class Crew(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.crew_type_label}, {self.position_label})"
 
-
-    def clean(self):
-        super().clean()
-
+    def validate_crew_position(self):
         if self.crew_type and self.position:
             if self.crew_type == CrewTypeChoices.FLIGHT_CREW and self.position not in FlightCrewPositionChoices:
                 raise ValidationError(f"Invalid {self.position_label} position for flight crew.")
             elif self.crew_type == CrewTypeChoices.CABIN_CREW and self.position not in CabinCrewPositionChoices:
                 raise ValidationError(f"Invalid {self.position_label} position for cabin crew.")
+
+    def clean(self):
+        super().clean()
+        self.validate_crew_position()
 
 
 class Flight(models.Model):
