@@ -245,8 +245,6 @@ class Ticket(models.Model):
     @staticmethod
     def validate_seat_number(row: int or None, seat: int or None, airplane: Airplane):
         if row and seat:
-            airplane = airplane
-
             if airplane.rows is None or airplane.seats_in_row is None:
                 raise ValidationError(
                     f"Ticket cannot be booked for {airplane.name}."
