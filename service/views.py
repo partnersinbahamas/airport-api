@@ -28,7 +28,7 @@ from service.serializers import (
     OrderReadSerializer,
 )
 from .filters import AirplaneFilterSet, AirportFilterSet
-from .paginations import FlightListPagination
+from .paginations import DefaultListPagination
 
 
 @extend_schema_view(
@@ -427,7 +427,7 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 )
 class FlightViewSet(viewsets.ModelViewSet):
     model = Flight
-    pagination_class = FlightListPagination
+    pagination_class = DefaultListPagination
 
     def get_serializer_class(self):
         match self.action:
@@ -482,6 +482,7 @@ class OrdersViewSet(
     mixins.DestroyModelMixin,
 ):
     queryset = Order.objects.all()
+    pagination_class = DefaultListPagination
 
     def get_queryset(self):
         return (
