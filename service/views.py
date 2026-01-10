@@ -446,7 +446,41 @@ class FlightViewSet(viewsets.ModelViewSet):
                 .prefetch_related("crew")
             )
 
-class OrdersViewSet(viewsets.ModelViewSet):
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="Orders list",
+        description="Get a list of orders.",
+        tags=["Orders"],
+        request=None,
+    ),
+    retrieve=extend_schema(
+        summary="Order details",
+        description="Get details of an order.",
+        tags=["Orders"],
+        request=None,
+    ),
+    create=extend_schema(
+        summary="Create order",
+        description="Create a new order.",
+        tags=["Orders"],
+        request=OrderSerializer,
+        responses={201: OrderReadSerializer}
+    ),
+    destroy=extend_schema(
+        summary="Delete order",
+        description="Delete an existing order.",
+        tags=["Orders"],
+        request=None,
+    )
+)
+class OrdersViewSet(
+    viewsets.GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+):
     queryset = Order.objects.all()
 
     def get_queryset(self):
