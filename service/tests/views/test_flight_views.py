@@ -11,7 +11,7 @@ from ..factories import (
     CrewFactory,
     RouteFactory,
 )
-from ...serializers import FlightSerializer
+from ...serializers import FlightReadSerializer
 
 from service.choices import CrewTypeChoices
 from service.models import Flight
@@ -53,7 +53,7 @@ class TestPublicFlightViews:
         response = self.client.post(FLIGHT_VIEW_LIST_URL, flight_data)
 
         flight = Flight.objects.get(id=response.data["id"])
-        flight_serializer = FlightSerializer(flight)
+        flight_serializer = FlightReadSerializer(flight)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data == flight_serializer.data

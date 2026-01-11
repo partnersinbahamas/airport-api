@@ -402,21 +402,21 @@ class AirplaneViewSet(viewsets.ModelViewSet):
         description="Create a new flight.",
         tags=["Flights"],
         request=FlightSerializer,
-        responses={201: FlightSerializer}
+        responses={201: FlightReadSerializer}
     ),
     update=extend_schema(
         summary="Update flight",
         description="Update an existing flight.",
         tags=["Flights"],
         request=FlightSerializer,
-        responses={200: FlightSerializer}
+        responses={200: FlightReadSerializer}
     ),
     partial_update=extend_schema(
         summary="Partial update flight",
         description="Partial update an existing flight.",
         tags=["Flights"],
         request=FlightSerializer,
-        responses={200: FlightSerializer}
+        responses={200: FlightReadSerializer}
     ),
     destroy=extend_schema(
         summary="Delete flight",
@@ -445,6 +445,31 @@ class FlightViewSet(viewsets.ModelViewSet):
                 )
                 .prefetch_related("crew")
             )
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_update(serializer)
+
+        outer_serializer = FlightReadSerializer(serializer.instance)
+
+        return Response(outer_serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_create(serializer)
+
+        outer_serializer = FlightReadSerializer(serializer.instance)
+
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(outer_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 @extend_schema_view(
