@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -172,15 +173,16 @@ class Crew(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.crew_type_label}, {self.position_label})"
 
-
-    def clean(self):
-        super().clean()
-
+    def validate_crew_position(self):
         if self.crew_type and self.position:
             if self.crew_type == CrewTypeChoices.FLIGHT_CREW and self.position not in FlightCrewPositionChoices:
                 raise ValidationError(f"Invalid {self.position_label} position for flight crew.")
             elif self.crew_type == CrewTypeChoices.CABIN_CREW and self.position not in CabinCrewPositionChoices:
                 raise ValidationError(f"Invalid {self.position_label} position for cabin crew.")
+
+    def clean(self):
+        super().clean()
+        self.validate_crew_position()
 
 
 class Flight(models.Model):
@@ -205,3 +207,62 @@ class Flight(models.Model):
         verbose_name_plural = "Flights"
         verbose_name = "Flight"
         ordering = ["departure_time"]
+
+
+class Order(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="orders")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} order"
+
+    class Meta:
+        verbose_name_plural = "Orders"
+        verbose_name = "Order"
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    row = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
+    seat = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
+    flight = models.ForeignKey(Flight, on_delete=models.PROTECT, related_name="tickets")
+    booked_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Ticket {self.row}-{self.seat} for {self.flight}"
+
+    class Meta:
+        verbose_name_plural = "Tickets"
+        verbose_name = "Ticket"
+        ordering = ["-booked_at"]
+
+        constraints = [
+            UniqueConstraint(fields=["row", "seat", "flight"], name="unique_flight_ticket")
+        ]
+
+
+    @staticmethod
+    def validate_seat_number(row: int or None, seat: int or None, airplane: Airplane):
+        if row and seat:
+            if airplane.rows is None or airplane.seats_in_row is None:
+                raise ValidationError(
+                    f"Ticket cannot be booked for {airplane.name}."
+                )
+
+            if row > airplane.rows:
+                raise ValidationError(
+                    f"Invalid row number. "
+                    f"Row number must be between 1 and {airplane.rows}."
+                )
+
+            if seat > airplane.seats_in_row:
+                raise ValidationError(
+                    f"Invalid seat number. "
+                    f"Seat number must be between 1 and {airplane.seats_in_row}."
+                )
+
+
+    def clean(self):
+        super().clean()
+        self.validate_seat_number(self.row, self.seat, self.flight.airplane)

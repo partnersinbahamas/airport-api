@@ -3,11 +3,11 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import mixins
 
-from service.models import Airport, Route, Manufacturer, Airplane, Flight
+from service.models import Airport, Route, Manufacturer, Airplane, Flight, Order
 from service.serializers import (
     AirportSerializer,
     AirportImageSerializer,
@@ -24,9 +24,11 @@ from service.serializers import (
     AirplaneCreateSerializer,
     FlightSerializer,
     FlightReadSerializer,
+    OrderSerializer,
+    OrderReadSerializer,
 )
 from .filters import AirplaneFilterSet, AirportFilterSet
-from .paginations import FlightListPagination
+from .paginations import DefaultListPagination
 
 
 @extend_schema_view(
@@ -425,7 +427,7 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 )
 class FlightViewSet(viewsets.ModelViewSet):
     model = Flight
-    pagination_class = FlightListPagination
+    pagination_class = DefaultListPagination
 
     def get_serializer_class(self):
         match self.action:
@@ -443,3 +445,76 @@ class FlightViewSet(viewsets.ModelViewSet):
                 )
                 .prefetch_related("crew")
             )
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="Orders list",
+        description="Get a list of orders.",
+        tags=["Orders"],
+        request=None,
+    ),
+    retrieve=extend_schema(
+        summary="Order details",
+        description="Get details of an order.",
+        tags=["Orders"],
+        request=None,
+    ),
+    create=extend_schema(
+        summary="Create order",
+        description="Create a new order.",
+        tags=["Orders"],
+        request=OrderSerializer,
+        responses={201: OrderReadSerializer}
+    ),
+    destroy=extend_schema(
+        summary="Delete order",
+        description="Delete an existing order.",
+        tags=["Orders"],
+        request=None,
+    )
+)
+class OrdersViewSet(
+    viewsets.GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+):
+    queryset = Order.objects.all()
+    pagination_class = DefaultListPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        return (
+            self.queryset.filter(user=self.request.user)
+                .prefetch_related(
+                    Prefetch(
+                        "tickets__flight",
+                        queryset=Flight.objects.select_related(
+                            "airplane",
+                            "route__source",
+                            "route__destination"
+                        )
+                    )
+                )
+        )
+
+    def get_serializer_class(self):
+        match self.action:
+            case "list" | "retrieve":
+                return OrderReadSerializer
+        return OrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_create(serializer)
+
+        output_serializer = OrderReadSerializer(serializer.instance)
+
+        return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

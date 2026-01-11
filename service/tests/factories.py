@@ -3,7 +3,7 @@ import random
 from django.contrib.auth import get_user_model
 
 from ..constants import MAX_PILOT_CAPACITY
-from ..models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew, Flight
+from ..models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew, Flight, Order, Ticket
 from ..utils import generate_unique_letters_code
 from ..choices import (
     CrewTypeChoices,
@@ -139,3 +139,41 @@ class FlightFactory(factory.django.DjangoModelFactory):
             )
 
             self.crew.add(cabin_crew)
+
+
+class OrderFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Order
+
+    user = factory.SubFactory(UserFactory)
+    created_at = factory.Faker("date_time")
+
+def generate_seat_and_row(flight: FlightFactory):
+    airplane = flight.airplane
+
+    while True:
+        row = random.choice(range(1, airplane.rows + 1))
+        seat = random.choice(range(1, airplane.seats_in_row + 1))
+
+        tickets = Ticket.objects.filter(flight=flight, row=row, seat=seat)
+
+        if not tickets.exists():
+            return row, seat
+
+class TicketFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Ticket
+
+    flight = factory.SubFactory(FlightFactory)
+    order = factory.SubFactory(OrderFactory)
+    booked_at = factory.Faker("date_time")
+
+    @factory.lazy_attribute
+    def row(self):
+        row, seat = generate_seat_and_row(self.flight)
+        self.__dict__["_generated_seat"] = seat
+        return row
+
+    @factory.lazy_attribute
+    def seat(self):
+        return self.__dict__.get("_generated_seat")

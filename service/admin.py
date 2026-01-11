@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew, Flight
+from .models import Airport, Route, AirplaneType, Manufacturer, Airplane, Crew, Order, Flight, Ticket
 from .utils import get_admin_url
 from .forms import FlightForm
 
@@ -19,6 +19,12 @@ class FlightInline(admin.TabularInline):
 
 class AirplaneInline(admin.TabularInline):
     model = Airplane
+    show_change_link = True
+    extra = 0
+
+
+class TicketInline(admin.TabularInline):
+    model = Ticket
     show_change_link = True
     extra = 0
 
@@ -114,3 +120,29 @@ class FlightAdmin(admin.ModelAdmin):
     list_display = ("id", "route", "airplane", "departure_time", "arrival_time")
     list_filter = ("departure_time", "arrival_time")
     search_fields = ("route__source__name", "route__destination__name")
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [TicketInline]
+    list_display = ("id", "user", "created_at", "tickets_count")
+    list_filter = ("created_at",)
+    search_fields = ("user__username",)
+
+    @staticmethod
+    def tickets_count(obj):
+        return obj.tickets.count()
+
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ("id", "row", "seat", "flight_link")
+    list_filter = ("row", "seat")
+
+    def flight_link(self, obj):
+        if obj.flight:
+            url = get_admin_url(obj.flight)
+            return format_html(mark_safe('<a href="{}">{}</a>'), url, obj.flight)
+        return None
+
+    flight_link.short_description = "Destination"
