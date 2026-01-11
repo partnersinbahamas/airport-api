@@ -160,11 +160,6 @@ class AirplaneRetrieveSerializer(AirplaneSerializer):
         fields = AirplaneListSerializer.Meta.fields + ("passenger_seats_total", "flights", "rows", "seats_in_row")
 
 
-class AirplaneCreateSerializer(AirplaneSerializer):
-    def to_representation(self, instance):
-        return AirplaneRetrieveSerializer(instance).data
-
-
 # Flight
 class FlightCrewSerializer(serializers.ModelSerializer):
     crew_type = serializers.SerializerMethodField()
