@@ -87,10 +87,6 @@ class ManufacturerRetrieveSerializer(ManufacturerSerializer):
         read_only_fields = ManufacturerSerializer.Meta.read_only_fields + ("created_at", "updated_at", "airplanes")
 
 
-class ManufacturerCreateSerializer(ManufacturerSerializer):
-    def to_representation(self, instance):
-        return ManufacturerRetrieveSerializer(instance).data
-
 # Airplane
 class AirplaneSerializer(serializers.ModelSerializer):
     class Meta:
