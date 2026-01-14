@@ -208,16 +208,16 @@ class FlightSerializer(serializers.ModelSerializer):
             cabin_crew = [crew_person for crew_person in crew if crew_person.crew_type == CrewTypeChoices.CABIN_CREW]
 
             if len(cabin_crew) > airplane.personal_capacity:
-                raise serializers.ValidationError({"detail": f"The number of cabin crew exceeds the airline's personal capacity."})
+                raise serializers.ValidationError(f"The number of cabin crew exceeds the airline's personal capacity.")
 
             if len(flight_crew) > airplane.pilots_capacity:
-                raise serializers.ValidationError({"detail": f"The number of flight crew exceeds the airline's pilot capacity."})
+                raise serializers.ValidationError(f"The number of flight crew exceeds the airline's pilot capacity.")
 
             if len(cabin_crew) < airplane.personal_capacity:
-                raise serializers.ValidationError({"detail": f"The number of airline personal capacity must be at least { airplane.personal_capacity}."})
+                raise serializers.ValidationError(f"The number of airline personal capacity must be at least { airplane.personal_capacity}.")
 
             if len(flight_crew) < airplane.pilots_capacity:
-                raise serializers.ValidationError({"detail": f"The number of airline pilots capacity must be at least {airplane.pilots_capacity}."})
+                raise serializers.ValidationError(f"The number of airline pilots capacity must be at least {airplane.pilots_capacity}.")
 
         return data
 

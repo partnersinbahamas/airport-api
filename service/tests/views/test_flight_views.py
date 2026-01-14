@@ -80,7 +80,7 @@ class TestPublicFlightViews:
         response = self.client.post(FLIGHT_VIEW_LIST_URL, flight_data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "The number of airline pilots capacity must be at least 2." in response.data["detail"]
+        assert "The number of airline pilots capacity must be at least 2." in response.data["non_field_errors"]
 
 
     def test_flight_should_validate_maximal_pilots_capacity(self):
@@ -112,7 +112,7 @@ class TestPublicFlightViews:
         response = self.client.post(FLIGHT_VIEW_LIST_URL, flight_data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "The number of flight crew exceeds the airline's pilot capacity." in response.data["detail"]
+        assert "The number of flight crew exceeds the airline's pilot capacity." in response.data["non_field_errors"]
 
 
     def test_flight_should_validate_minimal_personal_capacity(self):
@@ -140,7 +140,7 @@ class TestPublicFlightViews:
         response = self.client.post(FLIGHT_VIEW_LIST_URL, flight_data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "The number of airline personal capacity must be at least 2." in response.data["detail"]
+        assert "The number of airline personal capacity must be at least 2." in response.data["non_field_errors"]
 
 
     def test_flight_should_validate_maximal_personal_capacity(self):
@@ -172,7 +172,7 @@ class TestPublicFlightViews:
         response = self.client.post(FLIGHT_VIEW_LIST_URL, flight_data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "The number of cabin crew exceeds the airline's personal capacity." in response.data["detail"]
+        assert "The number of cabin crew exceeds the airline's personal capacity." in response.data["non_field_errors"]
 
 
     def test_flight_view_should_be_paginated(self):
