@@ -12,6 +12,7 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
       LOCAL_POSTGRES_HOST: ${LOCAL_POSTGRES_HOST}
       LOCAL_POSTGRES_PORT: ${LOCAL_POSTGRES_PORT}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
   app:
     build:
       context: .
@@ -28,6 +29,7 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
       LOCAL_POSTGRES_HOST: ${LOCAL_POSTGRES_HOST}
       LOCAL_POSTGRES_PORT: ${LOCAL_POSTGRES_PORT}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
     depends_on:
       - db
     command: >

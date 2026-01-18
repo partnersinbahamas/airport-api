@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 
 from ..factories import UserFactory
 
-from service.views import ManufacturerCreateSerializer
+from service.views import ManufacturerRetrieveSerializer
 from ...models import Manufacturer
 
 MANUFACTURER_VIEW_URL = reverse_lazy('service:manufacturers-list')
@@ -25,7 +25,7 @@ class TestPrivateManufacturerViews:
         response = self.client.post(MANUFACTURER_VIEW_URL, manufacturer_data)
 
         manufacturer = Manufacturer.objects.get(id=response.data["id"])
-        serializer = ManufacturerCreateSerializer(manufacturer)
+        serializer = ManufacturerRetrieveSerializer(manufacturer)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["name"] == serializer.data["name"]
