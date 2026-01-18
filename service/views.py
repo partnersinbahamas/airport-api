@@ -576,19 +576,22 @@ class OrdersViewSet(
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return (
-            self.queryset.filter(user=self.request.user)
-                .prefetch_related(
-                    Prefetch(
-                        "tickets__flight",
-                        queryset=Flight.objects.select_related(
-                            "airplane",
-                            "route__source",
-                            "route__destination"
+        if self.request.user.is_authenticated:
+            return (
+                self.queryset.filter(user=self.request.user)
+                    .prefetch_related(
+                        Prefetch(
+                            "tickets__flight",
+                            queryset=Flight.objects.select_related(
+                                "airplane",
+                                "route__source",
+                                "route__destination"
+                            )
                         )
                     )
-                )
-        )
+            )
+
+        return Order.objects.none()
 
     def get_serializer_class(self):
         match self.action:
