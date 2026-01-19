@@ -21,8 +21,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          LOCAL_POSTGRES_HOST: ${{ secrets.LOCAL_POSTGRES_HOST }}
-          LOCAL_POSTGRES_PORT: ${{ secrets.LOCAL_POSTGRES_PORT }}
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
         run: |
           docker compose -f docker-compose.ci.yml up --build --abort-on-container-exit --exit-code-from app --remove-orphans
