@@ -1,6 +1,14 @@
-# 🛫 Airport API
+# [🛫 Airport API](https://airport-api-o8z8.onrender.com/api/v1/user/login)
 
 REST API for managing flights, tickets, routes, airplanes, and crews.
+
+## 🔐 Demo credentials
+
+To log in to the site, you can use the following credentials:
+
+- **Username:** `user`
+- **Password:** `userpassword`
+
 
 ---
 ## 📦 Tech Stack
@@ -26,7 +34,7 @@ REST API for managing flights, tickets, routes, airplanes, and crews.
 
 The application image is published on Docker Hub: 
 
-**partnersinbahamas/airport-api-app**
+[partnersinbahamas/airport-api-app](https://hub.docker.com/repository/docker/partnersinbahamas/airport-api-app/general)
 
 ---
 
@@ -41,22 +49,42 @@ cd airport-api
 
 ---
 
-### 2️⃣ Create `.env` file
+### 2️⃣ Create `.env` and `.env.docker` file
 
 Create a `.env` file in the project root using `.env.example`:
 
+### .env
 ```env
-POSTGRES_DB=
-POSTGRES_USER=
-POSTGRES_PASSWORD=
-POSTGRES_HOST=
-POSTGRES_PORT=
-PGDATA=
-LOCAL_POSTGRES_HOST=localhost
-LOCAL_POSTGRES_PORT=
+POSTGRES_DB=your-db
+POSTGRES_USER=your-user
+POSTGRES_PASSWORD=your-password
+POSTGRES_HOST=localhost
+POSTGRES_PORT=your-port
+PGDATA=your/database/url/
+
+DJANGO_SECRET_KEY=your-secter-key
+DJANGO_SETTINGS_MODULE=app.settings.dev
+DJANGO_ENV=.env
+```
+
+### .env.docker
+```.env.docker
+POSTGRES_DB=your-db
+POSTGRES_USER=your-user
+POSTGRES_PASSWORD=your-password
+POSTGRES_HOST=your-host
+POSTGRES_PORT=your-port
+PGDATA=your/database/url/
+
+DJANGO_SECRET_KEY=your-secter-key
+DJANGO_SETTINGS_MODULE=app.settings.dev
+DJANGO_ENV=.env.docker
+
+IN_DOCKER=1
 ```
 
 ---
+
 
 ### 3️⃣ Build and run containers
 
@@ -74,6 +102,18 @@ This command will:
 - apply migrations
 - collect static files
 - run the development server
+
+---
+
+## 🗄️ Demo database
+
+The project includes a demo database dump.
+
+To load demo data locally:
+
+```bash
+python manage.py loaddata db-dump.json
+```
 
 ---
 
