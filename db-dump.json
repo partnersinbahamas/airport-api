@@ -1,0 +1,1379 @@
+[
+{
+    "model": "service.airport",
+    "pk": 1,
+    "fields": {
+        "name": "Berlin Brandenburg (BER)",
+        "city": "Berlin",
+        "image": "uploads/airports/berlin-brandenburg-ber-76327a06-5a7d-4b75-9a8d-942cb00d94ff.jpg",
+        "open_year": 2020,
+        "created_at": "2025-11-22T11:21:57.409"
+    }
+},
+{
+    "model": "service.airport",
+    "pk": 2,
+    "fields": {
+        "name": "Berlin-Tegel",
+        "city": "Berlin",
+        "image": "uploads/airports/berlin-tegel-4bf91e14-2cee-4726-a6fc-d077e477f9ae.jpg",
+        "open_year": 1939,
+        "created_at": "2025-11-22T17:25:12.547"
+    }
+},
+{
+    "model": "service.airport",
+    "pk": 3,
+    "fields": {
+        "name": "Boryspil International Airport",
+        "city": "Boryspil, Kyiv Oblast",
+        "image": "uploads/airports/boryspil-international-airport-28207f32-e699-4ef7-82bc-56be8edd30bb.jpg",
+        "open_year": 1959,
+        "created_at": "2025-11-22T17:31:49.992"
+    }
+},
+{
+    "model": "service.airport",
+    "pk": 4,
+    "fields": {
+        "name": "Dubai International Airport",
+        "city": "Dubai",
+        "image": "uploads/airports/dubai-international-airport-85b1a187-f08c-4a46-92f0-7e6e517dcf6a.jpg",
+        "open_year": 1960,
+        "created_at": "2025-11-28T16:04:55.734"
+    }
+},
+{
+    "model": "service.airport",
+    "pk": 5,
+    "fields": {
+        "name": "Dallas/Fort Worth International Airport",
+        "city": "Dallas",
+        "image": "uploads/airports/dallasfort-worth-international-airport-3abeb5f2-963e-417e-bcd8-7dafb8e1f7f8.jpg",
+        "open_year": 1974,
+        "created_at": "2025-11-28T16:08:01.884"
+    }
+},
+{
+    "model": "service.airport",
+    "pk": 6,
+    "fields": {
+        "name": "Tokyo Haneda Airport",
+        "city": "Tokyo",
+        "image": "uploads/airports/tokyo-haneda-airport-fdb1e945-5ac3-4332-bb8f-c56390eb425c.jpg",
+        "open_year": 1931,
+        "created_at": "2025-11-28T16:11:11.557"
+    }
+},
+{
+    "model": "service.airport",
+    "pk": 7,
+    "fields": {
+        "name": "Heathrow Airport",
+        "city": "London",
+        "image": "uploads/airports/heathrow-airport-f8b3cb8f-734e-484b-bf25-328d326d7200.jpeg",
+        "open_year": 1946,
+        "created_at": "2025-11-28T16:13:20.699"
+    }
+},
+{
+    "model": "service.route",
+    "pk": 1,
+    "fields": {
+        "source": 1,
+        "destination": 3,
+        "distance": 1354
+    }
+},
+{
+    "model": "service.route",
+    "pk": 3,
+    "fields": {
+        "source": 7,
+        "destination": 6,
+        "distance": 9615
+    }
+},
+{
+    "model": "service.route",
+    "pk": 4,
+    "fields": {
+        "source": 6,
+        "destination": 7,
+        "distance": 9615
+    }
+},
+{
+    "model": "service.route",
+    "pk": 5,
+    "fields": {
+        "source": 4,
+        "destination": 5,
+        "distance": 12915
+    }
+},
+{
+    "model": "service.route",
+    "pk": 6,
+    "fields": {
+        "source": 5,
+        "destination": 4,
+        "distance": 12915
+    }
+},
+{
+    "model": "service.route",
+    "pk": 7,
+    "fields": {
+        "source": 6,
+        "destination": 1,
+        "distance": 12626
+    }
+},
+{
+    "model": "service.route",
+    "pk": 8,
+    "fields": {
+        "source": 1,
+        "destination": 2,
+        "distance": 48
+    }
+},
+{
+    "model": "service.route",
+    "pk": 32,
+    "fields": {
+        "source": 2,
+        "destination": 1,
+        "distance": 48
+    }
+},
+{
+    "model": "service.manufacturer",
+    "pk": 1,
+    "fields": {
+        "name": "Boeing",
+        "country": "United States of America",
+        "founded_year": 1916,
+        "website": "https://www.boeing.com/",
+        "logo": "uploads/manufacturers/boeing-5e5ad06a-8eb9-4cb3-bead-95aab9ae30a7.jpg",
+        "created_at": "2025-12-07T17:02:59.754",
+        "updated_at": "2025-12-07T17:02:59.754"
+    }
+},
+{
+    "model": "service.manufacturer",
+    "pk": 2,
+    "fields": {
+        "name": "Lockheed Martin",
+        "country": "United States of America",
+        "founded_year": 1995,
+        "website": "https://www.lockheedmartin.com/en-us/products.html",
+        "logo": "",
+        "created_at": "2025-12-07T17:18:17.076",
+        "updated_at": "2025-12-11T19:27:33.646"
+    }
+},
+{
+    "model": "service.manufacturer",
+    "pk": 7,
+    "fields": {
+        "name": "Airbus",
+        "country": "European Union",
+        "founded_year": 1970,
+        "website": "https://www.airbus.com",
+        "logo": "uploads/manufacturers/airbus-d45238dc-b94f-4377-9812-0a7766c0d707.avif",
+        "created_at": "2025-12-16T18:23:42.383",
+        "updated_at": "2025-12-16T18:23:42.383"
+    }
+},
+{
+    "model": "service.manufacturer",
+    "pk": 8,
+    "fields": {
+        "name": "Embraer",
+        "country": "Brazil",
+        "founded_year": 1969,
+        "website": "https://www.embraer.com",
+        "logo": "uploads/manufacturers/embraer-6b8359a6-7559-45c1-8c5d-7afa4b0e8d14.jpg",
+        "created_at": "2025-12-16T18:27:21.702",
+        "updated_at": "2025-12-16T18:27:21.702"
+    }
+},
+{
+    "model": "service.manufacturer",
+    "pk": 9,
+    "fields": {
+        "name": "Bombardier",
+        "country": "Canada",
+        "founded_year": 1942,
+        "website": "https://bombardier.com/en",
+        "logo": "uploads/manufacturers/bombardier-228b24e4-59cb-4935-a77d-b6d6d448aad4.jpg",
+        "created_at": "2025-12-16T18:30:32.162",
+        "updated_at": "2025-12-16T18:30:32.162"
+    }
+},
+{
+    "model": "service.manufacturer",
+    "pk": 10,
+    "fields": {
+        "name": "ATR-Aircraft",
+        "country": "France / Italy",
+        "founded_year": 1981,
+        "website": "https://www.atr-aircraft.com/",
+        "logo": "uploads/manufacturers/atr-aircraft-b38c61cf-6e3b-4a0b-b911-9c233c257358.jpg",
+        "created_at": "2025-12-16T18:42:19.680",
+        "updated_at": "2025-12-16T18:42:19.680"
+    }
+},
+{
+    "model": "service.manufacturer",
+    "pk": 11,
+    "fields": {
+        "name": "Antonov",
+        "country": "Ukraine",
+        "founded_year": 1946,
+        "website": "https://www.antonov.com/en",
+        "logo": "uploads/manufacturers/antonov-6a5367bd-a850-4c88-b10e-bd8ea15fc025.jpg",
+        "created_at": "2025-12-17T18:18:48.945",
+        "updated_at": "2025-12-17T18:18:48.945"
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 1,
+    "fields": {
+        "name": "Civilian",
+        "code": "CIV",
+        "purpose": "General civilian flights, private flying."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 2,
+    "fields": {
+        "name": "Commercial",
+        "code": "COM",
+        "purpose": "Commercial passenger flights."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 3,
+    "fields": {
+        "name": "Cargo",
+        "code": "CGO",
+        "purpose": "Cargo transport and logistics."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 4,
+    "fields": {
+        "name": "Military",
+        "code": "MIL",
+        "purpose": "Military operations and tasks."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 5,
+    "fields": {
+        "name": "Private",
+        "code": "PVT",
+        "purpose": "Private aircraft, personal travel."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 6,
+    "fields": {
+        "name": "Training",
+        "code": "TRN",
+        "purpose": "Pilot training and practice flights."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 7,
+    "fields": {
+        "name": "Reconnaissance",
+        "code": "RCN",
+        "purpose": "Reconnaissance, observation, data gathering."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 8,
+    "fields": {
+        "name": "Fighter",
+        "code": "FGT",
+        "purpose": "Fighter aircraft, air combat."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 9,
+    "fields": {
+        "name": "Bomber",
+        "code": "BMB",
+        "purpose": "Bomber aircraft, strike missions."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 10,
+    "fields": {
+        "name": "Military transport",
+        "code": "MTP",
+        "purpose": "Military transport operations."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 11,
+    "fields": {
+        "name": "Helicopter",
+        "code": "HEL",
+        "purpose": "Helicopter operations, transport, and rescue."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 12,
+    "fields": {
+        "name": "Medical",
+        "code": "MED",
+        "purpose": "Medical evacuation, air ambulance."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 13,
+    "fields": {
+        "name": "Agricultural",
+        "code": "ARG",
+        "purpose": "Agricultural work (spraying, seeding)."
+    }
+},
+{
+    "model": "service.airplanetype",
+    "pk": 14,
+    "fields": {
+        "name": "Drone",
+        "code": "DRN",
+        "purpose": "Unmanned operations, surveillance and reconnaissance."
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 1,
+    "fields": {
+        "name": "Boeing 737-800",
+        "type": 2,
+        "manufacturer": 1,
+        "rows": 30,
+        "seats_in_row": 6,
+        "pilots_capacity": 2,
+        "personal_capacity": 4,
+        "year_of_manufacture": 1997,
+        "fuel_capacity_l": 26025,
+        "cargo_capacity_kg": 22700,
+        "max_speed_kmh": 897,
+        "max_distance_km": 5764,
+        "image": ""
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 4,
+    "fields": {
+        "name": "Airbus A320",
+        "type": 2,
+        "manufacturer": 7,
+        "rows": 28,
+        "seats_in_row": 6,
+        "pilots_capacity": 2,
+        "personal_capacity": 4,
+        "year_of_manufacture": 2018,
+        "fuel_capacity_l": 24210,
+        "cargo_capacity_kg": 19000,
+        "max_speed_kmh": 828,
+        "max_distance_km": 6100,
+        "image": "uploads/airplanes/airbus-a320-0035c49a-b9f9-4e99-acb0-ea2a19622ee1.jpg"
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 5,
+    "fields": {
+        "name": "ATR 72-600",
+        "type": 1,
+        "manufacturer": 10,
+        "rows": 18,
+        "seats_in_row": 4,
+        "pilots_capacity": 2,
+        "personal_capacity": 2,
+        "year_of_manufacture": 2020,
+        "fuel_capacity_l": 5000,
+        "cargo_capacity_kg": 7500,
+        "max_speed_kmh": 510,
+        "max_distance_km": 1500,
+        "image": "uploads/airplanes/atr-72-600-2ff63af4-8764-4f14-8dba-009f43dadec5.jpg"
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 6,
+    "fields": {
+        "name": "Embraer E195",
+        "type": 2,
+        "manufacturer": 8,
+        "rows": 25,
+        "seats_in_row": 4,
+        "pilots_capacity": 2,
+        "personal_capacity": 3,
+        "year_of_manufacture": 2019,
+        "fuel_capacity_l": 13000,
+        "cargo_capacity_kg": 13000,
+        "max_speed_kmh": 870,
+        "max_distance_km": 4260,
+        "image": "uploads/airplanes/embraer-e195-87b82452-37b1-4f3a-a631-29d2eac7dccb.jpg"
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 7,
+    "fields": {
+        "name": "Antonov An-124 Ruslan",
+        "type": 3,
+        "manufacturer": 11,
+        "rows": null,
+        "seats_in_row": null,
+        "pilots_capacity": 2,
+        "personal_capacity": 6,
+        "year_of_manufacture": 2004,
+        "fuel_capacity_l": 212000,
+        "cargo_capacity_kg": 150000,
+        "max_speed_kmh": 865,
+        "max_distance_km": 4800,
+        "image": "uploads/airplanes/antonov-an-124-ruslan-3452c28d-b00e-475c-9ca2-fac840e35284.jpg"
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 8,
+    "fields": {
+        "name": "Antonov An-225 Mriya",
+        "type": 13,
+        "manufacturer": 11,
+        "rows": null,
+        "seats_in_row": null,
+        "pilots_capacity": 2,
+        "personal_capacity": 6,
+        "year_of_manufacture": 1988,
+        "fuel_capacity_l": 300000,
+        "cargo_capacity_kg": 250000,
+        "max_speed_kmh": 850,
+        "max_distance_km": 4000,
+        "image": "uploads/airplanes/antonov-an-225-mriya-dd5c2f79-389e-4932-bcc3-5442e802dcd0.jpg"
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 9,
+    "fields": {
+        "name": "Lockheed Martin C-130 Hercules",
+        "type": 10,
+        "manufacturer": 2,
+        "rows": null,
+        "seats_in_row": null,
+        "pilots_capacity": 2,
+        "personal_capacity": 5,
+        "year_of_manufacture": 2010,
+        "fuel_capacity_l": 19000,
+        "cargo_capacity_kg": 20000,
+        "max_speed_kmh": 540,
+        "max_distance_km": 3800,
+        "image": "uploads/airplanes/lockheed-martin-c-130-hercules-364ed58b-8c83-4f3d-a6c0-90adbe0a7753.jpg"
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 10,
+    "fields": {
+        "name": "F-35 Lightning II",
+        "type": 8,
+        "manufacturer": 2,
+        "rows": null,
+        "seats_in_row": null,
+        "pilots_capacity": 1,
+        "personal_capacity": 0,
+        "year_of_manufacture": 2022,
+        "fuel_capacity_l": 8500,
+        "cargo_capacity_kg": 1100,
+        "max_speed_kmh": 1930,
+        "max_distance_km": 2200,
+        "image": "uploads/airplanes/f-35-lightning-ii-87351c6b-9e50-4e79-b548-bde78109424e.jpg"
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 11,
+    "fields": {
+        "name": "Bombardier Challenger 650",
+        "type": 5,
+        "manufacturer": 9,
+        "rows": 6,
+        "seats_in_row": 4,
+        "pilots_capacity": 2,
+        "personal_capacity": 1,
+        "year_of_manufacture": 2021,
+        "fuel_capacity_l": 14000,
+        "cargo_capacity_kg": 3000,
+        "max_speed_kmh": 870,
+        "max_distance_km": 7400,
+        "image": "uploads/airplanes/bombardier-challenger-650-2cb4424d-2ecf-4b95-9fa2-df536d881b83.jpg"
+    }
+},
+{
+    "model": "service.airplane",
+    "pk": 12,
+    "fields": {
+        "name": "Embraer Phenom 300",
+        "type": 5,
+        "manufacturer": 8,
+        "rows": 5,
+        "seats_in_row": 2,
+        "pilots_capacity": 2,
+        "personal_capacity": 1,
+        "year_of_manufacture": 2020,
+        "fuel_capacity_l": 8000,
+        "cargo_capacity_kg": 2000,
+        "max_speed_kmh": 839,
+        "max_distance_km": 3650,
+        "image": "uploads/airplanes/embraer-phenom-300-0a7add7c-dfa7-41ef-980e-4aae06f82c3e.jpg"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 2,
+    "fields": {
+        "first_name": "Denys",
+        "last_name": "Bokov",
+        "crew_type": "flight_crew",
+        "position": "captain"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 3,
+    "fields": {
+        "first_name": "Denys",
+        "last_name": "Bokov",
+        "crew_type": "cabin_crew",
+        "position": "flight_attendant"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 4,
+    "fields": {
+        "first_name": "John",
+        "last_name": "Smith",
+        "crew_type": "flight_crew",
+        "position": "captain"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 5,
+    "fields": {
+        "first_name": "Michael",
+        "last_name": "Brown",
+        "crew_type": "flight_crew",
+        "position": "co_pilot"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 6,
+    "fields": {
+        "first_name": "Alex",
+        "last_name": "Turner",
+        "crew_type": "flight_crew",
+        "position": "flight_engineer"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 7,
+    "fields": {
+        "first_name": "Anna",
+        "last_name": "Johnson",
+        "crew_type": "cabin_crew",
+        "position": "senior_flight_attendant"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 8,
+    "fields": {
+        "first_name": "Emily",
+        "last_name": "Clark",
+        "crew_type": "cabin_crew",
+        "position": "flight_attendant"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 9,
+    "fields": {
+        "first_name": "Sophia",
+        "last_name": "Miller",
+        "crew_type": "cabin_crew",
+        "position": "safety_officer"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 10,
+    "fields": {
+        "first_name": "Robert",
+        "last_name": "Wilson",
+        "crew_type": "flight_crew",
+        "position": "captain"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 11,
+    "fields": {
+        "first_name": "Daniel",
+        "last_name": "Evans",
+        "crew_type": "flight_crew",
+        "position": "navigator"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 12,
+    "fields": {
+        "first_name": "Thomas",
+        "last_name": "Harris",
+        "crew_type": "flight_crew",
+        "position": "co_pilot"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 13,
+    "fields": {
+        "first_name": "Olivia",
+        "last_name": "White",
+        "crew_type": "cabin_crew",
+        "position": "flight_attendant"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 14,
+    "fields": {
+        "first_name": "Isabella",
+        "last_name": "Martinez",
+        "crew_type": "cabin_crew",
+        "position": "senior_flight_attendant"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 15,
+    "fields": {
+        "first_name": "Mia",
+        "last_name": "Anderson",
+        "crew_type": "cabin_crew",
+        "position": "safety_officer"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 16,
+    "fields": {
+        "first_name": "Robert",
+        "last_name": "Wilson",
+        "crew_type": "flight_crew",
+        "position": "captain"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 17,
+    "fields": {
+        "first_name": "Daniel",
+        "last_name": "Evans",
+        "crew_type": "flight_crew",
+        "position": "navigator"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 18,
+    "fields": {
+        "first_name": "Thomas",
+        "last_name": "Harris",
+        "crew_type": "flight_crew",
+        "position": "co_pilot"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 19,
+    "fields": {
+        "first_name": "Olivia",
+        "last_name": "White",
+        "crew_type": "cabin_crew",
+        "position": "flight_attendant"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 20,
+    "fields": {
+        "first_name": "Isabella",
+        "last_name": "Martinez",
+        "crew_type": "cabin_crew",
+        "position": "senior_flight_attendant"
+    }
+},
+{
+    "model": "service.crew",
+    "pk": 21,
+    "fields": {
+        "first_name": "Mia",
+        "last_name": "Anderson",
+        "crew_type": "cabin_crew",
+        "position": "safety_officer"
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 1,
+    "fields": {
+        "route": 4,
+        "airplane": 1,
+        "departure_time": "2025-12-29T11:52:40",
+        "arrival_time": "2025-12-30T11:52:42",
+        "crew": [
+            2,
+            5,
+            15,
+            19,
+            20,
+            21,
+            4
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 3,
+    "fields": {
+        "route": 4,
+        "airplane": 4,
+        "departure_time": "2025-12-27T14:44:00",
+        "arrival_time": "2025-12-28T15:45:00",
+        "crew": [
+            8,
+            2,
+            4,
+            7
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 4,
+    "fields": {
+        "route": 3,
+        "airplane": 1,
+        "departure_time": "2025-12-30T23:20:00",
+        "arrival_time": "2025-12-30T23:20:00",
+        "crew": [
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 5,
+    "fields": {
+        "route": 6,
+        "airplane": 5,
+        "departure_time": "2026-01-28T17:40:00",
+        "arrival_time": "2026-01-29T20:27:00",
+        "crew": [
+            16,
+            17,
+            19,
+            15
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 6,
+    "fields": {
+        "route": 1,
+        "airplane": 8,
+        "departure_time": "2026-01-17T17:40:00",
+        "arrival_time": "2026-01-17T19:53:00",
+        "crew": [
+            2,
+            9,
+            14,
+            15,
+            19,
+            20,
+            21
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 7,
+    "fields": {
+        "route": 6,
+        "airplane": 8,
+        "departure_time": "2026-01-30T00:05:00",
+        "arrival_time": "2026-01-31T03:23:00",
+        "crew": [
+            4,
+            6,
+            7,
+            8,
+            9,
+            13,
+            15,
+            21
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 8,
+    "fields": {
+        "route": 5,
+        "airplane": 6,
+        "departure_time": "2026-01-24T19:28:00",
+        "arrival_time": "2026-01-29T00:31:00",
+        "crew": [
+            2,
+            4,
+            13,
+            14,
+            15
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 9,
+    "fields": {
+        "route": 6,
+        "airplane": 4,
+        "departure_time": "2026-01-28T23:36:00",
+        "arrival_time": "2026-01-30T00:31:00",
+        "crew": [
+            2,
+            13,
+            14,
+            15,
+            19,
+            4
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 10,
+    "fields": {
+        "route": 3,
+        "airplane": 5,
+        "departure_time": "2026-03-19T00:00:00",
+        "arrival_time": "2026-03-20T06:55:00",
+        "crew": [
+            2,
+            4,
+            14,
+            15
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 11,
+    "fields": {
+        "route": 3,
+        "airplane": 5,
+        "departure_time": "2026-03-19T19:57:00",
+        "arrival_time": "2026-01-20T22:00:00",
+        "crew": [
+            2,
+            21,
+            20,
+            5
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 12,
+    "fields": {
+        "route": 6,
+        "airplane": 8,
+        "departure_time": "2026-01-31T01:05:00",
+        "arrival_time": "2026-02-02T01:01:00",
+        "crew": [
+            2,
+            4,
+            13,
+            14,
+            15,
+            19,
+            20,
+            21
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 13,
+    "fields": {
+        "route": 7,
+        "airplane": 8,
+        "departure_time": "2026-01-31T00:05:00",
+        "arrival_time": "2026-02-01T22:03:00",
+        "crew": [
+            2,
+            4,
+            13,
+            14,
+            15,
+            19,
+            20,
+            21
+        ]
+    }
+},
+{
+    "model": "service.flight",
+    "pk": 14,
+    "fields": {
+        "route": 3,
+        "airplane": 8,
+        "departure_time": "2026-02-01T08:06:00",
+        "arrival_time": "2026-02-01T20:03:00",
+        "crew": [
+            2,
+            4,
+            13,
+            14,
+            15,
+            19,
+            20,
+            21
+        ]
+    }
+},
+{
+    "model": "service.order",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "created_at": "2026-01-05T12:15:20.469"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 9,
+    "fields": {
+        "user": 1,
+        "created_at": "2026-01-05T18:04:33.509"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 11,
+    "fields": {
+        "user": 1,
+        "created_at": "2026-01-05T18:16:06.431"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 15,
+    "fields": {
+        "user": 1,
+        "created_at": "2026-01-10T12:53:57.836"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 16,
+    "fields": {
+        "user": 1,
+        "created_at": "2026-01-10T13:01:29.246"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 17,
+    "fields": {
+        "user": 2,
+        "created_at": "2026-01-10T13:16:46.705"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 18,
+    "fields": {
+        "user": 3,
+        "created_at": "2026-01-18T13:35:00.112"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 19,
+    "fields": {
+        "user": 3,
+        "created_at": "2026-01-18T13:35:23.089"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 20,
+    "fields": {
+        "user": 3,
+        "created_at": "2026-01-18T13:35:57.373"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 21,
+    "fields": {
+        "user": 4,
+        "created_at": "2026-01-18T13:37:47.504"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 22,
+    "fields": {
+        "user": 4,
+        "created_at": "2026-01-18T13:38:07.066"
+    }
+},
+{
+    "model": "service.order",
+    "pk": 23,
+    "fields": {
+        "user": 5,
+        "created_at": "2026-01-18T13:42:38.903"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 2,
+    "fields": {
+        "row": 1,
+        "seat": 3,
+        "order": 1,
+        "flight": 4,
+        "booked_at": "2026-01-05T12:40:13.919"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 3,
+    "fields": {
+        "row": 7,
+        "seat": 3,
+        "order": 1,
+        "flight": 4,
+        "booked_at": "2026-01-05T12:40:52.729"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 4,
+    "fields": {
+        "row": 28,
+        "seat": 4,
+        "order": 1,
+        "flight": 4,
+        "booked_at": "2026-01-05T12:41:50.796"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 8,
+    "fields": {
+        "row": 29,
+        "seat": 4,
+        "order": 9,
+        "flight": 4,
+        "booked_at": "2026-01-05T18:04:33.512"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 10,
+    "fields": {
+        "row": 12,
+        "seat": 6,
+        "order": 11,
+        "flight": 6,
+        "booked_at": "2026-01-05T18:16:06.434"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 14,
+    "fields": {
+        "row": 28,
+        "seat": 3,
+        "order": 15,
+        "flight": 4,
+        "booked_at": "2026-01-10T12:53:57.844"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 15,
+    "fields": {
+        "row": 28,
+        "seat": 1,
+        "order": 16,
+        "flight": 4,
+        "booked_at": "2026-01-10T13:01:29.252"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 16,
+    "fields": {
+        "row": 12,
+        "seat": 5,
+        "order": 17,
+        "flight": 3,
+        "booked_at": "2026-01-10T13:16:46.707"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 17,
+    "fields": {
+        "row": 5,
+        "seat": 4,
+        "order": 18,
+        "flight": 10,
+        "booked_at": "2026-01-18T13:35:00.116"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 18,
+    "fields": {
+        "row": 5,
+        "seat": 3,
+        "order": 19,
+        "flight": 10,
+        "booked_at": "2026-01-18T13:35:23.091"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 19,
+    "fields": {
+        "row": 2,
+        "seat": 6,
+        "order": 20,
+        "flight": 3,
+        "booked_at": "2026-01-18T13:35:57.374"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 20,
+    "fields": {
+        "row": 1,
+        "seat": 1,
+        "order": 21,
+        "flight": 10,
+        "booked_at": "2026-01-18T13:37:47.505"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 21,
+    "fields": {
+        "row": 1,
+        "seat": 2,
+        "order": 21,
+        "flight": 10,
+        "booked_at": "2026-01-18T13:37:47.506"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 22,
+    "fields": {
+        "row": 1,
+        "seat": 3,
+        "order": 21,
+        "flight": 10,
+        "booked_at": "2026-01-18T13:37:47.507"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 23,
+    "fields": {
+        "row": 6,
+        "seat": 6,
+        "order": 22,
+        "flight": 4,
+        "booked_at": "2026-01-18T13:38:07.068"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 24,
+    "fields": {
+        "row": 4,
+        "seat": 4,
+        "order": 23,
+        "flight": 10,
+        "booked_at": "2026-01-18T13:42:38.905"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 25,
+    "fields": {
+        "row": 3,
+        "seat": 1,
+        "order": 23,
+        "flight": 10,
+        "booked_at": "2026-01-18T13:42:38.906"
+    }
+},
+{
+    "model": "service.ticket",
+    "pk": 26,
+    "fields": {
+        "row": 3,
+        "seat": 2,
+        "order": 23,
+        "flight": 10,
+        "booked_at": "2026-01-18T13:42:38.907"
+    }
+},
+{
+    "model": "user.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$SvTOaxEVCBJczUEt6MIa3x$d/CyYYzlndmPBO8knPcaYGkYWTi1iGI5wOAvf8ltkk4=",
+        "last_login": "2026-01-24T16:00:59.894",
+        "is_superuser": true,
+        "username": "dbadmin",
+        "first_name": "",
+        "last_name": "",
+        "email": "bokovdenys.dev@gmail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-11-17T19:22:58.638",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "user.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$sklEM5XzSv4YmIMqwEtpcA$zwmt+wC+XrZHK381J7gEK6sn3oOVDZ18MujLFUmJhW8=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "dbuser",
+        "first_name": "Denys",
+        "last_name": "Bokov",
+        "email": "denisbokov1703@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-11-17T19:30:01",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "user.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$hbzDaA3OqxySCiCDAYSJ1H$U8cvQr9mxNENRgN5fOeteFc56Vmxn0KqPEDibxryZY0=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "user",
+        "first_name": "",
+        "last_name": "",
+        "email": "user@mail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-01-18T13:33:03",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "user.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$dNPXObn2vFXEbvVhF86NEp$V7At22xcnWoLZot+IV603QM4nyYzAmhmm0G/IfxaO0c=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "hopper",
+        "first_name": "Jim",
+        "last_name": "Hopper",
+        "email": "hop@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-01-18T13:36:52.562",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "user.user",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$cxhXeHM7bxhafThi4eDz1E$kJWKYMftdj178uAZHa50c6Xd5N0A8ZWjqB1CBkaE7aY=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "stvhg",
+        "first_name": "",
+        "last_name": "",
+        "email": "steve.h@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-01-18T13:38:50.977",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]
